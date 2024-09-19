@@ -26,9 +26,9 @@ Most of this code interacts with our internal database, so much of it will be pr
 
 Feel free to reach out to the lab if you have any questions / comments. We're always happy to discuss.
 
-# Rules
+# Notes
 
-- No hard coded credentials. We utilize an `env` file hidden from the public repo by default (for obvious reasons)
+- We utilize a file @ `./env` hidden from the public repo by default (for obvious reasons)
 
 
 
