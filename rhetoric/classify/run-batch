@@ -1,0 +1,22 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../../env
+
+## Python
+(
+    set -e # start error-stop mode
+
+    # v-- this HAS to come before sending the next batch otherwise we're probably going to be double processing
+    echo "PROCESS PREVIOUS BATCHES"
+    $py3 -u "receive batch.py"
+
+    ## Run
+    echo "CHUNK DATA AND INSERT INTO DATABASE"
+    $py3 -u insert.py
+
+    echo "SEND BATCH TO CLASSIFY NEWLY INSERTED DATA"
+    $py3 -u "send batch.py"
+
+
+    set +e # exit error-stop mode
+)

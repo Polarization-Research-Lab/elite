@@ -1,0 +1,37 @@
+# Block all files and directories by default
+*
+.*  # Ignore hidden files and directories
+
+# Unignore the `.gitignore` file itself
+!.gitignore
+
+# Unignore directories, but allow Git to traverse the parent directory
+!*/
+
+!officials/**
+!attendance/**
+!efficacy/**
+!ideology/**
+!money/**
+!rhetoric/**
+!floor/**
+!newsletters/**
+!twitter/**
+!statements/**
+!tv/**
+
+# Block
+.*/
+env
+tv/search/
+ads/
+-/
+
+## Python
+__pycache__/
+
+## macOS
+.DS_Storeg/g-kMhmUkzPs-coding/https://chatgpt.com/?%2A=g%2Fg-kMhmUkzPs-coding%2Fhttps%3A%2F%2Fchatgpt.com%2F
+
+## Windows
+desktop.ini

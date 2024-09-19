@@ -1,0 +1,31 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../env
+
+# Run
+echo "--- START: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+
+mkdir -p .tmp/
+$py3 ingest.py
+
+# The R Stuff 
+cd R
+# Run Ideology Calculation
+Rscript run_ggum_ideal_points.R
+Rscript "convert to a readable format.R"
+cd ..
+
+# # Sent Ideology Scores to Database table
+$py3 "digest.py"
+
+# Make Plots
+cd R
+Rscript "create_dotplot.R"
+
+
+# # $py3 process.py
+# # rm -r .tmp/
+
+# # # ## Add Timestamp
+echo "--- FIN: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+echo "============"

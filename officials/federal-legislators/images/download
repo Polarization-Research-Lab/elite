@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Setup
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../../../env
+
+## Run
+echo 'downloading image files...'
+$py3 'download.py'
