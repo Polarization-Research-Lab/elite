@@ -1,0 +1,14 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../env
+
+# Run
+echo "--- START: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+
+# Make Plots
+cd R
+Rscript "create_dotplot.R"
+
+# # # ## Add Timestamp
+echo "--- FIN: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+echo "============"

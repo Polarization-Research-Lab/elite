@@ -101,7 +101,7 @@ plot_dots = \(member_name, memberid, data){
           axis.text.y = element_blank()) +
     labs(x = NULL,
          y = NULL) +
-    scale_x_continuous(breaks=c(ideo_min+.05, ideo_max-.55), labels=c("Most Liberal", "Most Conservative"))
+    scale_x_continuous(breaks=c(ideo_min+.05, ideo_max-.55), labels=c("Most Liberal", "Most Conservative"), expand = expansion(mult = c(0.1, 0.1)))
   
   int_dat = mean_binwidth(ggplot_build(p_pre)$data[[1]], mean_rep, mean_dem, ideo)
   
@@ -125,7 +125,9 @@ plot_dots = \(member_name, memberid, data){
 }
 
 # # Example: Kim Schrier (D-WA8)
-# p<-plot_dots("BUCK, Kenneth Robert","B001297",dta_118)
+# p<-plot_dots("BUCK, Kenneth Robert","B001297",dta_118) |> 
+#     ggsave('test.png', plot = _, width=4.25, height=4, units="in", dpi=600)
+# q()
 # p
 
 # Loop Over all Congresspeople 
