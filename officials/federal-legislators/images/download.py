@@ -17,8 +17,6 @@ db = ibis.mysql.connect(
     database = 'elite',
 )
 
-
-exit()
 legislators = db.table('legislators')
 legislators = (
     legislators
@@ -27,13 +25,17 @@ legislators = (
 )
 
 for bioguide_id in legislators['bioguide_id']:
+    print(bioguide_id)
     url = f"https://theunitedstates.io/images/congress/450x550/{bioguide_id}.jpg"
     response = requests.get(url)
-    time.sleep(5)  # Delay to avoid rate limiting
+    time.sleep(.5)  # Delay to avoid rate limiting
 
     if response.headers['Content-Type'].startswith('image') and response.status_code == 200:
-        # Check if the response is an image and it was returned successfully
-        file_path = f'src/set/{bioguide_id}.jpg'
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-
+        # Check if the response contains image data and that it's not empty
+        if len(response.content) > 0:
+            file_path = f'set/{bioguide_id}.jpg'
+            with open(file_path, 'wb') as file:
+                file.write(response.content)
+        else:
+            print('NONE!!@!!!')
+            print(f"No image data received for {bioguide_id}, skipping...")

@@ -1,0 +1,27 @@
+Given this image complete the following tasks:
+
+Variable: image_description
+Describe what the image shows.  Do not transcribe any text that appears, just note that there is text. 
+
+Variable: is_text
+Indicate if the image contains primarily text.  1 if it does and 0 if it does not.
+
+Variable: image_text
+Identify text that appears in the image
+
+Variable: image_objects
+Identify each object you can in the image
+
+Variable: image_tweet
+Identify if the image is a social media post. 1 if it is and 0 if it is not
+
+Output your results as JSON in the following format:
+
+{
+  "image_description":"",
+  "is_text":"",
+  "image_text:"",
+  "image_objects": [ ""],
+  "image_tweet":""
+}
+

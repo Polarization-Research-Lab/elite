@@ -66,7 +66,7 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
         # WHEN JS IS NEEDED FOR PAGINATION
         if js_for_paginate:
             with sync_playwright() as p:
-                print('JS REQUIRED')
+                # print('JS REQUIRED')
                 browser = p.chromium.launch(headless=True)
                 page = browser.new_page()
                 page.goto(url)
@@ -75,12 +75,12 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
                 initial_html = page.content()
 
                 while paginate:
-                    print('paginating...')
+                    # print('paginating...')
 
                     html = page.content()
 
                     articles = scrape_articles(html, article_selector, link_selector, date_selector)
-                    print(f"found {articles.shape[0]} articles from {articles['date'].min()} through {articles['date'].max()}")
+                    # print(f"found {articles.shape[0]} articles from {articles['date'].min()} through {articles['date'].max()}")
                     results.append(articles)
 
                     if prev_last_link == articles.iloc[-1]['link']:
@@ -116,23 +116,23 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
 
         # WHEN JS IS NOT NEEDED FOR PAGINATION
         else:
-            print('NO JS NEEDED')
+            # print('NO JS NEEDED')
             if pagination_selector.endswith('/@href') == False: pagination_selector += '/@href'
 
             while paginate:
-                print('paginating...')
+                # print('paginating...')
                 response = requests.get(url)
                 html = utils.fetch_html(url, js_load = js_on_page_load)
 
                 articles = scrape_articles(html, article_selector, link_selector, date_selector)
-                print(f"found {articles.shape[0]} articles from {articles['date'].min()} through {articles['date'].max()}")
+                # print(f"found {articles.shape[0]} articles from {articles['date'].min()} through {articles['date'].max()}")
                 results.append(articles)
 
                 assert prev_last_link != articles.iloc[-1]['link'], "error on pagination: prev last link is same as current last link"
                 prev_last_link = articles.iloc[-1]['link']
 
                 if (not articles.empty) and (start_date <= articles['date'].min()):
-                    print(f'PAGINATING; min article date: {articles["date"].min()}; startdate: {start_date}')
+                    # print(f'PAGINATING; min article date: {articles["date"].min()}; startdate: {start_date}')
                     next_page = parsel.Selector(text=html).xpath(pagination_selector).get()
                     if next_page:
                         url = urllib.parse.urljoin(base_url, next_page)
@@ -148,7 +148,7 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
                 time.sleep(3)
 
 
-    print(pd.concat(results))
+    # print(pd.concat(results))
 
     results = pd.concat(results)
 
