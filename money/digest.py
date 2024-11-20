@@ -36,11 +36,11 @@ with dataset.connect(params) as dbx:
 # Load Money Data; merge with CAND_ID (so we can merge with legislators table)
 
 # load actual campaign contributions data
-with open('assets/itcont_header.csv') as file: headers = file.read().replace('\n','').split(',') # <- why tf are these separate files? maybe there's a reason
-money = ibis.read_csv('.tmp/itcont.txt', sep = '|', names = headers, header = False, quote="")
+with open('assets/indiv_header_file.csv') as file: headers = file.read().replace('\n','').split(',') # <- why tf are these separate files? maybe there's a reason
+money = ibis.read_csv('/s3/fec/itcont.txt', sep = '|', names = headers, header = False, quote="")
 
 ## load name link
-with open('assets/ccl_header.csv') as file: headers = file.read().replace('\n','').split(',') # <- why tf are these separate files? maybe there's a reason
+with open('assets/ccl_header_file.csv') as file: headers = file.read().replace('\n','').split(',') # <- why tf are these separate files? maybe there's a reason
 namelink = ibis.read_csv('assets/ccl.txt', sep = '|', names = headers, header = False)
 
 ## merge
@@ -80,15 +80,17 @@ legislators_w_spending = legislators.merge(money_agg, left_on = "fec_ids", right
 legislators_w_spending.to_csv('.tmp/legislators_w_spending.csv', index=False)
 legislators_w_spending = pd.read_csv('.tmp/legislators_w_spending.csv')
 
-
 ## aggregate calculations
 # print(legislators_w_spending.head())
 
-total_money_avg_sen = round(legislators_w_spending[legislators_w_spending['type'] == 'sen']['total_money'].mean(),2)
-total_ind_don_avg_sen = int(legislators_w_spending[legislators_w_spending['type'] == 'sen']['total_ind_don'].mean())
+total_money_avg_sen = round(legislators_w_spending[legislators_w_spending['type'] == 'Senator']['total_money'].mean(),2)
+total_ind_don_avg_sen = legislators_w_spending[legislators_w_spending['type'] == 'Senator']['total_ind_don'].mean()
 
-total_money_avg_rep = round(legislators_w_spending[legislators_w_spending['type'] == 'rep']['total_money'].mean(),2)
-total_ind_don_avg_rep = int(legislators_w_spending[legislators_w_spending['type'] == 'rep']['total_ind_don'].mean())
+total_money_avg_rep = round(legislators_w_spending[legislators_w_spending['type'] == 'Representative']['total_money'].mean(),2)
+total_ind_don_avg_rep = legislators_w_spending[legislators_w_spending['type'] == 'Representative']['total_ind_don'].mean()
+
+print(total_ind_don_avg_rep)
+print(total_ind_don_avg_sen)
 
 # get rankings
 legislators_w_spending['total_money_rank'] = legislators_w_spending['total_money'].rank(ascending = False, method = 'dense')

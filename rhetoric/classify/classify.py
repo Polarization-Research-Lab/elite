@@ -21,17 +21,9 @@ import hjson
 
 # Internal Dependencies
 import llms
-from prompts import attack, outcomes, policy, all_category
+import prompt
 
-# Setup
-prompts = {
-    # 'attack': attack,
-    # 'outcomes': outcomes,
-    # 'policy': policy,
-    'all_category': all_category,
-}
-
-dotenv.load_dotenv('../../env')
+dotenv.load_dotenv('../../../env')
 dotenv.load_dotenv(os.environ['PATH_TO_SECRETS'])
 
 ## DB Credentials
@@ -42,126 +34,95 @@ conn = ibis.mysql.connect(
     password = os.environ['DB_PASSWORD'],
     database = 'elite',
 )
-classifications = conn.table('classifications')
+unclassified_items = (
+    conn.table('classifications')
+    .select([
+        'id',
+        'text',
+        'date',
+        'classified',
+        'attack_personal',
+        'attack_type',
+        'attack_target',
+        'attack_explanation',
+        'attack_policy',
+        'outcome_bipartisanship',
+        'bipartisanship_explanation',
+        'outcome_creditclaiming',
+        'creditclaiming_explanation',
+        'policy',
+        'policy_area',
+        'policy_explanation',
+        'extreme_label',
+    ])
+    .filter([
+        _.date >= '2023-01-01', # <-- we dont care about items before then
+        (_.classified != 1) | _.classified.isnull()
+    ])
+)
 
-debug = False
+count = unclassified_items.count().execute()
+chunksize = 1000
+num_chunks = int(count / chunksize) + 1
 
-## Process Reponse Function
-def process_response(item, prompt):
-    try:
-        if '{' in item['response']:
-            item['response'] = item['response'][item['response'].find('{'):item['response'].rfind('}')+1]
-        else: 
-            raise ValueError('Bad JSON detected')
+print(f'''
+RUNNING COLLECTION
+count: {count}
+chunksize: {chunksize}
+num_chunks: {num_chunks}
+''')
 
-        item['response'] = hjson.loads(item['response'].replace("“",'"').replace("”", '"'))
-        for key in prompts[prompt].column_map:
-            col = prompts[prompt].column_map[key]['name'] # <-- what we actually name the column
-            item[col] = prompts[prompt].column_map[key]['filter'](
-                item['response'][key]
-            )
-        return item
+for c in range(num_chunks):
+    print(f'\tCollecting chunk {c}')
 
-    except Exception as exception:
-        item['errors'][prompt] = f"Error in processing {item['source']}-{item['source_id']}.\n===\nResponse: {item['response']}\n===\nException: {exception}"
-        # raise(exception)
-        return item
+    chunk = (
+        unclassified_items
+        .limit(chunksize)
+        .execute()
+    )
 
-if __name__ == '__main__':
-    print('---starting---')
-    count = classifications.count().execute()
+    if chunk.shape[0] == 0:
+        print('\tNOTHING TO CLASSIFY (SOMETHING PROBABLY WENT WRONG FOR THIS MESSAGE TO SHOW); BREAKING')
+        break
 
-    total_processed = {
-        # 'attack': 0,
-        # 'policy': 0,
-        # 'outcomes': 0,
-        'all_category': 0,
-    }
-
-    today = datetime.date.today()
-    beginning_date = datetime.date(year=2024, month=5, day=30)
-    # beginning_date = datetime.date(year=2024, month=1, day=1)
-    # beginning_date = datetime.date(year=2022,month=8,day=1) # <-- go back to the beginning
-
-    for d, day in enumerate(range((today - beginning_date).days + 1)):
-        target_date = today - datetime.timedelta(days = day) # <-- start from lastest date (go backward)
-       
-        print(target_date)
-
-        chunk = (
-            classifications 
-            .filter(classifications.date == target_date)
+    chunk = dd.from_pandas(chunk, npartitions = 16)
+    chunk = (
+       chunk 
+        .apply(
+            prompt.pipeline, 
+            axis = 1,
+            meta={
+                'id': 'int64', 
+                'text': 'object', 
+                'date': 'datetime64[ns]', 
+                'classified': 'int64',
+                'attack_personal': 'int64', 
+                'attack_type': 'object',
+                'attack_target': 'object',
+                'attack_explanation': 'object',
+                'attack_policy': 'int64',
+                'outcome_bipartisanship': 'int64',
+                'bipartisanship_explanation': 'object',
+                'outcome_creditclaiming': 'int64',
+                'creditclaiming_explanation': 'object',
+                'policy': 'int64',
+                'policy_area': 'object',
+                'policy_explanation': 'object',
+                'extreme_label': 'object',
+            }
         )
-        for prompt in prompts:
+        .compute()
+    )
 
-            combined_filter = ibis.literal(False)
-            for col in prompts[prompt].column_map.values(): # Chain OR conditions for each column
-                combined_filter = combined_filter | chunk[col['name']].isnull()
+    print('\t ** classification successful **')
 
-            num_items_that_need_classifying = (
-                chunk 
-                .filter(combined_filter)
-                .count()
-                .execute()
-            )
+    with database.connect(params) as dbx:
+        dbx['classifications'].upsert_many(
+            chunk.to_dict(orient = 'records'),
+            'id'
+        ) 
 
-            print('\t', prompt, '|', num_items_that_need_classifying)
+    print('\t ** upsert successful **')
+    print('\n------------------------------\n\n')
 
-            # print("FIGURE OUT FILTERING ERROR")
-            # exit()
-
-            if num_items_that_need_classifying > 0:
-                total_processed[prompt] += num_items_that_need_classifying
-
-                items_that_need_classifying = (
-                    chunk
-                    .select(['id','source','source_id','bioguide_id','text', 'errors'] + [col['name'] for col in prompts[prompt].column_map.values()])
-                    .filter(combined_filter)
-                    .execute()
-                )
-                items_that_need_classifying['errors'] = items_that_need_classifying['errors'].apply(lambda x: {} if x is None else x)
-                items_that_need_classifying['response'] = None
-
-                print('\t\t', items_that_need_classifying.shape, '<-- pre')
-
-                ## Do the actual classification
-                ddf = dd.from_pandas(items_that_need_classifying[['text']], npartitions = 16) # <-- convert to dask for parallelization
-                res = ddf['text'].apply( # <-- build apply
-                    lambda text: llms.chatgpt(
-                        prompts[prompt].prompt.format(target = text)
-                    ),
-                    meta = ('str')
-                ).compute()
-
-                ## Process
-                items_that_need_classifying['response'] = res # <-- add classifications to the df
-
-                for col in prompts[prompt].column_map.values():
-                    items_that_need_classifying[col['name']] = None
-                    items_that_need_classifying[col['name']] = items_that_need_classifying[col['name']].astype(object)
-
-                # format results
-                items_that_need_classifying = items_that_need_classifying.apply(lambda item: process_response(item, prompt), axis = 1)
-
-                new_cols = [col['name'] for col in prompts[prompt].column_map.values()]
-                results = items_that_need_classifying[['id','source','source_id', 'bioguide_id', 'text', 'errors'] + new_cols]
-                results = results.fillna(np.nan).replace([np.nan], [None])
-
-                print('\t\t', results.shape, '<-- post')
-
-                # upload results
-                if debug == False:
-                    with database.connect(params) as dbx:
-                        dbx['classifications'].upsert_many(
-                            results.to_dict(orient = 'records'),
-                            'id'
-                        )
-                else:
-                    print('not pushing data; debug mode')
-
-
-    print('done!\n======\nprocessed:\n')
-    print(total_processed)
-
-
-
+print('==== DONE ====')

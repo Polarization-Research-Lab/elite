@@ -16,7 +16,7 @@ db = ibis.mysql.connect(
     password = os.environ['DB_PASSWORD'],
     database = 'elite',
 )
-legislators = db.table('legislators')
+legislators = db.table('officials')
 
 
 exit()

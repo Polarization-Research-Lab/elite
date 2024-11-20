@@ -29,3 +29,12 @@ title:
 
 ^ we dropped this, and reran from may 21st, so it's like it didnt happen
  -->
+
+## 2024 Nov 4
+
+- Prompt overall; required major codebase changes
+
+
+
+
+
