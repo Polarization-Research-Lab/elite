@@ -28,6 +28,8 @@ env
 tv/search/
 ads/
 -/
+officials/state-legislators/
+statements/test/
 
 ## Python
 __pycache__/

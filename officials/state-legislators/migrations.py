@@ -44,64 +44,64 @@ sheets_service = google_utils.sheets_service
 
 states_drive_folder = '1K-CohXS8oeaqXbOr5UVkG908fpquMNBP'
 
-states = [
-    # 'OH',
-    # 'WA',
-    # 'MD',
-    # 'DE',
-    # 'PA',
-    # 'CA',
-    # 'MN',
-    # 'NJ',
-    # 'VT',
-    # 'MI',
-    # 'MT',
-    # 'RI',
-    # 'WY',
-    # 'MS',
-    # 'ME',
-    # 'TX',
-    # 'IL',
-    'SC',
-    'KY',
-    'OR',
-    'ID',
-    'NH',
-    'VA',
-    'NY',
-    'WV',
-    'AL',
-    'WI',
-    'CO',
-    'FL',
-    'GA',
-    'TN',
-    'CT',
-    'AR',
-    'IN',
-    'LA',
-    'MO',
-    'OK',
-    'NC',
-    'AZ',
-    'IA',
-    'NM',
-    'HI',
-    'ND',
-    'MA',
-    'UT',
-    'KS',
-    'AK',
-    'DC',
-    'MP',
-    'NE',
-    'SD',
-    'NV',
-    'VI',
-    'AS',
-    'PR',
-    'GU'
-]
+# states = [
+#     'OH',
+#     'WA',
+#     'MD',
+#     'DE',
+#     'PA',
+#     'CA',
+#     'MN',
+#     'NJ',
+#     'VT',
+#     'MI',
+#     'MT',
+#     'RI',
+#     'WY',
+#     'MS',
+#     'ME',
+#     'TX',
+#     'IL',
+#     'SC',
+#     'KY',
+#     'OR',
+#     'ID',
+#     'NH',
+#     'VA',
+#     'NY',
+#     'WV',
+#     'AL',
+#     'WI',
+#     'CO',
+#     'FL',
+#     'GA',
+#     'TN',
+#     'CT',
+#     'AR',
+#     'IN',
+#     'LA',
+#     'MO',
+#     'OK',
+#     'NC',
+#     'AZ',
+#     'IA',
+#     'NM',
+#     'HI',
+#     'ND',
+#     'MA',
+#     'UT',
+#     'KS',
+#     'AK',
+#     'DC',
+#     'MP',
+#     'NE',
+#     'SD',
+#     'NV',
+#     'VI',
+#     'AS',
+#     'PR',
+#     'GU'
+# ]
 
 def delete_these_columns(sheetname, folder):
     try:
@@ -156,6 +156,64 @@ def delete_these_columns(sheetname, folder):
                         "dimension": "COLUMNS",
                         "startIndex": birthday,  # Start at the index of "id" column
                         "endIndex": birthday + 1  # End at the next column
+                    },
+                }
+            },
+        ]
+
+        sheets_service.spreadsheets().batchUpdate(
+            spreadsheetId=spreadsheet_id,
+            body={"requests": requests}
+        ).execute()
+
+        print(f"Column deleted successfully in spreadsheet '{sheetname}'.")
+
+    except google_utils.HttpError as e:
+        print("An error occurred:", e)
+        return None
+
+def delete_this_column(column, sheetname, folder):
+    try:
+        # Step 1: Check if the file already exists in the shared folder
+        query = f"'{folder}' in parents and name='{sheetname}' and mimeType='application/vnd.google-apps.spreadsheet'"
+        results = drive_service.files().list(
+            q=query,
+            fields="files(id, name)",
+            includeItemsFromAllDrives=True,
+            supportsAllDrives=True
+        ).execute()
+        files = results.get('files', [])
+        
+        if not files:
+            print(f"No spreadsheet found with the name: {sheetname} in folder: {folder}")
+            return
+        spreadsheet_id = files[0]['id']
+        print(f"Found spreadsheet '{sheetname}' with ID: {spreadsheet_id}")
+
+        # Step 2: Retrieve the first sheet and headers
+        sheet_metadata = sheets_service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+        sheet_id = sheet_metadata['sheets'][0]['properties']['sheetId']  # Assuming first sheet
+        headers = sheets_service.spreadsheets().values().get(
+            spreadsheetId=spreadsheet_id,
+            range="A1:ZZ1"  # Assuming headers are in the first row
+        ).execute().get('values', [[]])[0]
+
+        # Step 3: Find the index of the "id" column
+        try:
+            column_index = headers.index(column)
+        except ValueError:
+            print("Column not found in headers.")
+            return
+
+        # Step 4: delte the columns
+        requests = [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "dimension": "COLUMNS",
+                        "startIndex": column_index,  # Start at the index of "id" column
+                        "endIndex": column_index + 1  # End at the next column
                     },
                 }
             },
@@ -255,11 +313,16 @@ def replace_these_columns(sheetname, folder):
 
 
 if __name__ == '__main__':
+    
+    print('No migrations selected (leave them commented out unless activily using this script); Exiting...')
+    exit()
+
     for state in states:
         # state = 'SC'
         print(f'performing migration for {state}')
         # delete_these_columns(sheetname=state, folder=states_drive_folder)
-        replace_these_columns(sheetname=state, folder=states_drive_folder)
+        # delete_this_column(column='twitter_id',sheetname=state, folder=states_drive_folder)
+        # replace_these_columns(sheetname=state, folder=states_drive_folder)
         print('-----------done---------')
         time.sleep(5)
         # exit()

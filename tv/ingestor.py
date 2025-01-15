@@ -79,7 +79,6 @@ def ingest(start_date, end_date, db, logdb):
 
                 with tempfile.TemporaryDirectory() as temp_dir: # <-- this directory gets deleted once the context is left
                     # temp_dir = '.tmp/'
-                    internetarchive.download(item['identifier'], verbose = False, formats = 'Closed Caption Text', destdir = temp_dir) # <-- downloades transcripts for the particular show we're looking at
 
                     splitname = item['identifier'].split('_') # example of what the identifier typically looks like: "CNNW_20221115_000000_Erin_Burnett_OutFront"
                     time = datetime.datetime.strptime(splitname[2], '%H%M00') # ignore microseconds
@@ -87,17 +86,26 @@ def ingest(start_date, end_date, db, logdb):
 
                     filepath = os.path.join(temp_dir, item['identifier'], item['identifier'] + '.cc5.txt')
 
-                    if os.path.exists(filepath):
-                        with open(filepath, 'r') as file:
-                            text = file.read()
+                    error = None
+                    try:
+                        internetarchive.download(item['identifier'], verbose = False, formats = 'Closed Caption Text', destdir = temp_dir) # <-- downloades transcripts for the particular show we're looking at
 
-                        entries.append({
-                            'date': date,
-                            'text': text,
-                            'network': network,
-                            'show': show,
-                            'time': time,
-                        })
+                        if os.path.exists(filepath):
+                            with open(filepath, 'r') as file:
+                                text = file.read()
+                    except Exception as e:
+                        error = str(e)
+                        print(f"FAILED FOR: {item['identifier']} ::>> {e}")
+                        text = None
+
+                    entries.append({
+                        'date': date,
+                        'text': text,
+                        'network': network,
+                        'show': show,
+                        'time': time,
+                        'error': error,
+                    })
 
         dbx = dataset.connect(db)
         dbx[tablename].insert_many(entries)

@@ -7,5 +7,5 @@ source ../../env
 # Execute Actual commands we care about
 (
     set -e
-    $py3 ingest.py
+    $py3 "ingest-everyone-active.py"
 )

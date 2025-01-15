@@ -72,7 +72,8 @@ def get_tweets_by_user(user_id, start_date, end_date, bearer_token):
             else:
                 break
         elif response.status_code == 429:  # Rate limit exceeded
-            print(f"Rate limit exceeded. Waiting for 15 minutes...")
+            print(f"Rate limit exceeded. Waiting for 15 minutes... | message: {response.status_code},{response.text}")
+            exit()
             time.sleep(15 * 60 + 10)  # Wait for 15 minutes
         else:
             print(f"Failed to fetch tweets. Status code: {response.status_code}")
@@ -98,7 +99,7 @@ def ingest(legislator, start_date, end_date, db, logdb, api_key):
                 twitter_id, 
                 start_datetime, 
                 end_datetime, 
-                bearer_token = api_key,
+                bearer_token = api_key, 
             )
 
             for tweet in tweets:
@@ -116,14 +117,55 @@ def ingest(legislator, start_date, end_date, db, logdb, api_key):
 
     if entries:
         
+        # DIFFERENTIATE BETWEEN STATE AND NATIONAL <-- EVENTUALLY JUST LUMP ALL THESE TOGETHER
         dbx = dataset.connect(db)
         if legislator['level'] == 'national':
             dbx['tweets'].upsert_many(entries, ['tweet_id'])
         elif legislator['level'] == 'state':
-            dbx['tweets_state_test'].upsert_many(entries, ['tweet_id'])
+            dbx['tweets_state'].upsert_many(entries, ['tweet_id'])
 
         else:
             print(f"what's wrong with the level attr of {legislator['first_name']} {legislator['last_name']}? level attr: {legislator['level']}")
         dbx.engine.dispose(); dbx.close()
 
     print('count:', count)
+
+
+
+def get_tweets_by_tweet_id(tweet_id, bearer_token):
+    print(tweet_id)
+    url = f"https://api.twitter.com/2/tweets/{tweet_id}"
+
+    headers = {
+        'Authorization': f'Bearer {bearer_token}',
+    }
+
+    params = {
+        'tweet.fields': 'created_at,public_metrics',  # Add tweet fields
+        'expansions': 'attachments.media_keys',  # Expand media attachments
+        'media.fields': 'media_key,type,url',  # Fields for media attachments
+    }
+
+    retries = 0
+    while retries < 2:  # Limit retries to avoid infinite loops
+        response = requests.get(url, headers=headers, params=params)
+        respjson = response.json()
+        if response.status_code == 200:
+            if respjson.get('errors'):
+                pass
+                # print(respjson.get('errors'))
+            else:
+                return respjson  # Return the full tweet data
+        elif response.status_code == 429:  # Rate limit exceeded
+            print(f"Rate limit exceeded. Waiting for 15 minutes...")
+            time.sleep(15 * 60 + 10)  # Wait for 15 minutes
+        else:
+            print(f"Failed to fetch tweet. Status code: {response.status_code}")
+            # Exponential backoff: sleep for 2^retries seconds
+            time.sleep(2**retries)
+        retries += 1
+
+    if respjson: 
+        return respjson
+    else: 
+        return None  # Return None if all retries fail

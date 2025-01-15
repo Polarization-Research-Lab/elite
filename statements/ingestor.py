@@ -46,8 +46,10 @@ def ingest(legislator, start_date, end_date, db, logdb):
     press_release_scraping = dbx['scraper_press_releases'].find_one(official_id = legislator['id'])
     dbx.engine.dispose(); dbx.close()
 
+    print(legislator['name'])
+
     legislator_plus = pd.concat([legislator, pd.Series(press_release_scraping)])
-    if legislator_plus['article_selector']:
+    if legislator_plus.get('article_selector'):
         entries = []
 
         try:

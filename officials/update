@@ -7,8 +7,7 @@ source ../../env
 # Execute Actual commands we care about
 (
     set -e
-    mkdir .tmp
-    $py3 "download tmp files.py"
-    $py3 "push base csv.py"
-    $py3 "add serving since.py"
+    ./federal-legislators/update
+    ./state-legislators/pull
+    $py3 "get twitter ids from handles.py"
 )

@@ -72,6 +72,7 @@ chunksize: {chunksize}
 num_chunks: {num_chunks}
 ''')
 
+# for c in range(num_chunks):
 for c in range(num_chunks):
     print(f'\tCollecting chunk {c}')
 
@@ -117,10 +118,11 @@ for c in range(num_chunks):
     print('\t ** classification successful **')
 
     with database.connect(params) as dbx:
+        chunk = chunk.replace({np.nan: None})
         dbx['classifications'].upsert_many(
             chunk.to_dict(orient = 'records'),
             'id'
-        ) 
+        )
 
     print('\t ** upsert successful **')
     print('\n------------------------------\n\n')

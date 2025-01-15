@@ -11,7 +11,7 @@ import ibis
 from ibis import _
 
 # Setup
-categories = ['attack_personal', 'attack_policy', 'outcome_creditclaiming', 'policy', 'policy_legislative_discussion', 'outcome_bipartisanship']
+categories = ['attack_personal', 'attack_policy', 'outcome_creditclaiming', 'policy', 'outcome_bipartisanship']
 
 ## Connect to DB
 dotenv.load_dotenv('../../env')
@@ -29,12 +29,7 @@ officials = conn.table('officials').filter([_['active'] == 1, _['level'] == 'nat
 
 
 # Transform
-classifications = classifications.mutate(
-    attack_personal = ibis.case()
-        .when((classifications.attack == 0) & (classifications.attack_personal == 1), 0)
-        .else_(classifications.attack_personal)
-        .end(),
-)
+classifications = classifications
 
 # Aggregate (across all sources)
 aggregate_classifications = (

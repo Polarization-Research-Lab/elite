@@ -8,4 +8,4 @@ source ../env
 (
     set -e
     $py3 ingest.py
-)
+) 2>&1 | tee lastrun # <-- this last part sends a copy of the output to a file called lastrun

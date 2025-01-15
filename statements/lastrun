@@ -1,0 +1,883 @@
+starting
+None
+HTTPSConnectionPool(host='www.brown.senate.gov', port=443): Max retries exceeded with url: /newsroom/press-releases?expanded=true (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12660cf070>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 1 articles
+None
+HTTPSConnectionPool(host='www.cardin.senate.gov', port=443): Max retries exceeded with url: /press-releases/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12662b8280>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.carper.senate.gov/newsroom/press-releases/
+Call log:
+navigating to "https://www.carper.senate.gov/newsroom/press-releases/", waiting until "load"
+
+None
+HTTPSConnectionPool(host='www.casey.senate.gov', port=443): Max retries exceeded with url: /news/releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12660203a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='www.menendez.senate.gov', port=443): Max retries exceeded with url: /newsroom/press (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cb1c70>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 1 articles
+None
+HTTPSConnectionPool(host='www.stabenow.senate.gov', port=443): Max retries exceeded with url: /news (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12661ba2b0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.tester.senate.gov/newsroom/press-releases/
+Call log:
+navigating to "https://www.tester.senate.gov/newsroom/press-releases/", waiting until "load"
+
+None
+found 1 articles
+None
+found 2 articles
+None
+DATE ERR!!!!
+Max date found: 2030-12-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+error on pagination: prev last link is same as current last link
+None
+found 1 articles
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+found 3 articles
+None
+found 2 articles
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-29; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='www.manchin.senate.gov', port=443): Max retries exceeded with url: /newsroom/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263af01f0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Date Found | None
+None
+ERR: NO ARTICLES FOUND
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='blumenauer.house.gov', port=443): Max retries exceeded with url: /media-center/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263bddfa0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 1 articles
+None
+HTTPSConnectionPool(host='bucshon.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263aa1f40>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='burgess.house.gov', port=443): Max retries exceeded with url: /News/DocumentQuery.aspx?DocumentTypeID=75 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cc6eb0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+found 1 articles
+None
+Error: Link https://crawford.house.gov/<div id="id1">Dec 20, 2024</div> returned a 404 status code.
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Date Found | None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='jeffduncan.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b12ee0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='eshoo.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263ad7610>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='kaygranger.house.gov', port=443): Max retries exceeded with url: /press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126b03adf0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 1 articles
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+None
+No Date Found | None
+None
+DATE ERR!!!!
+Max date found: 2029-12-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2030-10-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+found 1 articles
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+found 2 articles
+None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='lamborn.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263af01c0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+error on pagination: prev last link is same as current last link
+None
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='lee.house.gov', port=443): Max retries exceeded with url: /news/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126389ed60>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2025-09-18; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='luetkemeyer.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=2270 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261755730>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Date Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-21; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+None
+None
+None
+None
+HTTPSConnectionPool(host='mchenry.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=418 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12637f4100>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+Page.goto: net::ERR_NAME_NOT_RESOLVED at https://mcmorris.house.gov/press
+Call log:
+navigating to "https://mcmorris.house.gov/press", waiting until "load"
+
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-31; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+HTTPSConnectionPool(host='napolitano.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12617a2fa0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2025-12-23; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+found 2 articles
+None
+found 2 articles
+None
+HTTPSConnectionPool(host='posey.house.gov', port=443): Max retries exceeded with url: /News/DocumentQuery.aspx?DocumentTypeID=1487 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b80370>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 2 articles
+None
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+HTTPSConnectionPool(host='ruppersberger.house.gov', port=443): Max retries exceeded with url: /news-room/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261723a60>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='sablan.house.gov', port=443): Max retries exceeded with url: /media-center/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b806d0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='sarbanes.house.gov', port=443): Max retries exceeded with url: /media-center/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263c61df0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='schiff.house.gov', port=443): Max retries exceeded with url: /news/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261723400>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+None
+No Link Found | None
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+ERR: NO ARTICLES FOUND
+None
+No Link Found | None
+None
+None
+None
+No Link Found | None
+None
+found 2 articles
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+No Link Found | None
+None
+None
+found 2 articles
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+None
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-18; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='www.sinema.senate.gov', port=443): Max retries exceeded with url: /press-releases/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263945c10>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 1 articles
+None
+None
+No Date Found | None
+None
+None
+HTTPSConnectionPool(host='cardenas.house.gov', port=443): Max retries exceeded with url: /media-center/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126171db20>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+None
+None
+found 1 articles
+None
+None
+HTTPSConnectionPool(host='dankildee.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261740550>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 2 articles
+None
+No Date Found | None
+None
+None
+None
+HTTPSConnectionPool(host='kuster.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263caf160>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='wenstrup.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=2491 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b27f70>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Date Found | None
+None
+None
+Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+waiting for locator("//div[@class=\"jet-filters-pagination__item prev-next next\"]/div[@class=\"jet-filters-pagination__link\"]") to be visible
+
+None
+None
+HTTPSConnectionPool(host='cartwright.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=2442 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12638af130>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2031-12-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='kilmer.house.gov', port=443): Max retries exceeded with url: /news/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263804f10>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-20; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+found 1 articles
+None
+No Date Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='rubengallego.house.gov', port=443): Max retries exceeded with url: /media-center/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263ca74c0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-31; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+None
+found 1 articles
+None
+None
+None
+HTTPSConnectionPool(host='garretgraves.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263972fd0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+found 1 articles
+None
+None
+None
+None
+None
+No Link Found | None
+None
+None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='mooney.house.gov', port=443): Max retries exceeded with url: /category/press-releases/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cb1250>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 1 articles
+None
+DATE ERR!!!!
+Max date found: 2030-12-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+None
+None
+found 1 articles
+None
+None
+found 1 articles
+None
+None
+found 1 articles
+None
+found 3 articles
+None
+No Link Found | None
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+Paginator not found
+None
+None
+HTTPSConnectionPool(host='bluntrochester.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263f9d520>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Date Found | None
+None
+None
+None
+No Date Found | None
+None
+None
+HTTPSConnectionPool(host='ferguson.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126602ebe0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='banks.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a13df0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+Paginator not found
+None
+found 3 articles
+None
+None
+found 1 articles
+None
+Paginator not found
+None
+None
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='gonzalez-colon.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126382c4c0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+found 3 articles
+None
+None
+None
+HTTPSConnectionPool(host='curtis.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261708730>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 2 articles
+None
+HTTPSConnectionPool(host='lesko.house.gov', port=443): Max retries exceeded with url: /press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263afdcd0>: Failed to establish a new connection: [Errno -5] No address associated with hostname'))
+None
+DATE ERR!!!!
+Max date found: 2031-10-26; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+None
+found 1 articles
+None
+None
+found 2 articles
+None
+HTTPSConnectionPool(host='wild.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263c1d6a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='porter.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126168fcd0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2025-12-29; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+None
+found 1 articles
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='pence.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1239b5e640>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 2 articles
+None
+DATE ERR!!!!
+Max date found: 2025-12-23; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='trone.house.gov', port=443): Max retries exceeded with url: /category/congress_press_release/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b199a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='slotkin.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a04af0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='phillips.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12661baa60>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='armstrong.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263817e80>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='kim.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12660eabb0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+found 3 articles
+None
+None
+Paginator not found
+None
+No Link Found | None
+None
+No Date Found | None
+None
+None
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+found 1 articles
+None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='allred.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12637dad00>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 1 articles
+None
+Page.goto: net::ERR_NAME_NOT_RESOLVED at https://spanberger.house.gov/resources/press
+Call log:
+navigating to "https://spanberger.house.gov/resources/press", waiting until "load"
+
+None
+HTTPSConnectionPool(host='wexton.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263c0de50>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.braun.senate.gov/newsroom/press-releases/
+Call log:
+navigating to "https://www.braun.senate.gov/newsroom/press-releases/", waiting until "load"
+
+None
+DATE ERR!!!!
+Max date found: 2025-12-20; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='www.romney.senate.gov', port=443): Max retries exceeded with url: /category/press-releases/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a42910>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='danbishop.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126632d8b0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='mikegarcia.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cc66d0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+waiting for locator("//div[@class='jet-filters-pagination__item prev-next next']/div") to be visible
+
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+None
+None
+Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted
+None
+HTTPSConnectionPool(host='carl.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126610dc40>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Date Found | None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='steel.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cb5ee0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+found 2 articles
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='laturner.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12637d6be0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+found 1 articles
+None
+HTTPSConnectionPool(host='bush.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126171ec70>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='rosendale.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b3b3d0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+HTTPSConnectionPool(host='manning.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a0c0a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+ERR: NO ARTICLES FOUND
+None
+No Link Found | None
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2025-09-22; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+HTTPSConnectionPool(host='bowman.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12638b24f0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+None
+No Link Found | None
+None
+None
+None
+None
+HTTPSConnectionPool(host='good.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cafb20>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+404 Client Error: Not Found for url: https://strickland.house.gov/media/press-releases
+None
+None
+error on pagination: prev last link is same as current last link
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+None
+No Date Found | None
+None
+None
+None
+ERR: NO ARTICLES FOUND
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='peltola.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a53eb0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+None
+HTTPSConnectionPool(host='www.vance.senate.gov', port=443): Max retries exceeded with url: /press-releases/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12638af670>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+DATE ERR!!!!
+Max date found: 2025-12-20; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='duarte.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263c813a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+404 Client Error: Not Found for url: https://kevinmullin.house.gov/media/press-releases
+None
+found 1 articles
+None
+None
+HTTPSConnectionPool(host='caraveo.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263a58d30>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+No Link Found | None
+None
+DATE ERR!!!!
+Max date found: 2026-11-01; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+ERR: NO ARTICLES FOUND
+None
+No Link Found | None
+None
+No Link Found | None
+None
+No Date Found | None
+None
+DATE ERR!!!!
+Max date found: 2025-12-17; current date is 2025-01-15 <-- that's an error; CHECK!
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+None
+None
+None
+No Link Found | None
+None
+ERR: NO ARTICLES FOUND
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='nickel.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1261613ee0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='jeffjackson.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f12637da0a0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+found 1 articles
+None
+No Date Found | None
+None
+No Link Found | None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='desposito.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f126385f070>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+HTTPSConnectionPool(host='molinaro.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263bf9430>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+HTTPSConnectionPool(host='brandonwilliams.house.gov', port=443): Max retries exceeded with url: /news/documentquery.aspx?DocumentTypeID=27 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cc6640>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+None
+None
+None
+found 207 articles
+Article `download()` failed with 403 Client Error: Forbidden for url: https://sykes.house.gov/media/press-releases/rep-sykes-launches-valentines-for-vets-program%20 on URL https://sykes.house.gov/media/press-releases/rep-sykes-launches-valentines-for-vets-program%20
+None
+None
+HTTPSConnectionPool(host='chavez-deremer.house.gov', port=443): Max retries exceeded with url: /media/press-releases (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263b80d90>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+No Date Found | None
+None
+No Date Found | None
+None
+None
+No Link Found | None
+None
+found 1 articles
+None
+No Link Found | None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+No Date Found | None
+None
+No Link Found | None
+None
+error on pagination: prev last link is same as current last link
+None
+found 1 articles
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+None
+No Link Found | None
+None
+HTTPSConnectionPool(host='www.butler.senate.gov', port=443): Max retries exceeded with url: /news/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f1263cf5040>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+None
+No Link Found | None
+None
+None
+None
+None
+None
+None
+	items processed: 81

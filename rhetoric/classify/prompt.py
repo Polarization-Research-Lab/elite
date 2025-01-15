@@ -127,49 +127,53 @@ A 20-ish word explanation for why the text fits in the selected policy area or a
     }}
 }}
 
-Text: "{target}"
+Here is the following text. It might be incomplete; just analyze it like we asked. Text: "{target}"
 """
 
 def pipeline(row):
     new_row = row.copy()
     new_row['classified'] = 0 # <-- start by setting this to false. switch to true only if the function finishes to the end
-
-    query = prompt.format(target = new_row['text'])
-
-    response = llms.chatgpt(query)
-    
-    if response.lstrip().startswith("```json"): response = response.lstrip()[7:] # Remove the initial json and any whitespace before it
-    if response.rstrip().endswith("```"): response = response.rstrip()[:-3] # Remove the final
-
     try:
-        response = hjson.loads(response)
-    except:
-        print('bad json detected')
-        return new_row 
 
-    new_row['attack_personal'] = yesno(response['attacks']['personal_attack'])
-    new_row['attack_type'] = str(response['attacks']['attack_type'])
-    new_row['attack_target'] = str(response['attacks']['personal_attack_target'])
-    new_row['attack_explanation'] = str(response['attacks']['attack_reasoning'])
-    new_row['attack_policy'] = yesno(response['policy_criticism']['policy_attack'])
+        query = prompt.format(target = new_row['text'])
 
-    new_row['outcome_bipartisanship'] = yesno(response['bipartisanship']['is_bipartisanship'])
-    new_row['bipartisanship_explanation'] = str(response['bipartisanship']['bipartisanship_reasoning'])
+        response = llms.chatgpt(query)
+        
+        if response.lstrip().startswith("```json"): response = response.lstrip()[7:] # Remove the initial json and any whitespace before it
+        if response.rstrip().endswith("```"): response = response.rstrip()[:-3] # Remove the final
 
-    new_row['outcome_creditclaiming'] = yesno(response['credit_claiming']['is_creditclaiming'])
-    new_row['creditclaiming_explanation'] = str(response['credit_claiming']['creditclaiming_reasoning'])
+        try:
+            response = hjson.loads(response)
+        except:
+            print('bad json detected')
+            return new_row
 
-    new_row['policy_explanation'] = str(response['policy']['policy_reasoning'])
-    new_row['policy_area'] = str(response['policy']['policy_area'])
+        new_row['attack_personal'] = yesno(response['attacks']['personal_attack'])
+        new_row['attack_type'] = str(response['attacks']['attack_type'])
+        new_row['attack_target'] = str(response['attacks']['personal_attack_target'])
+        new_row['attack_explanation'] = str(response['attacks']['attack_reasoning'])
+        new_row['attack_policy'] = yesno(response['policy_criticism']['policy_attack'])
 
-    new_row['extreme_label'] = str(response['extremism']['extreme_label'])
+        new_row['outcome_bipartisanship'] = yesno(response['bipartisanship']['is_bipartisanship'])
+        new_row['bipartisanship_explanation'] = str(response['bipartisanship']['bipartisanship_reasoning'])
 
-    if len(hjson.loads(new_row['policy_area'])) > 0:
-        new_row['policy'] = 1
-    else:
-        new_row['policy'] = 0
+        new_row['outcome_creditclaiming'] = yesno(response['credit_claiming']['is_creditclaiming'])
+        new_row['creditclaiming_explanation'] = str(response['credit_claiming']['creditclaiming_reasoning'])
 
-    new_row['classified'] = 1
+        new_row['policy_explanation'] = str(response['policy']['policy_reasoning'])
+        new_row['policy_area'] = str(response['policy']['policy_area'])
+
+        new_row['extreme_label'] = str(response['extremism']['extreme_label'])
+
+        if len(hjson.loads(new_row['policy_area'])) > 0:
+            new_row['policy'] = 1
+        else:
+            new_row['policy'] = 0
+
+        new_row['classified'] = 1
+
+    except Exception as e:
+        print(f'error with {new_row["id"]}, {new_row["text"]}: {e}')
 
     return new_row 
 

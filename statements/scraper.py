@@ -143,7 +143,6 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
 
                 tries += 1
                 if tries >= 60: 
-                    browser.close()
                     raise Exception("Overpaginated. Too Many Tries. Backing off to avoid getting blacklisted")
                 time.sleep(3)
 
@@ -161,6 +160,6 @@ def run(url, article_selector, link_selector, date_selector, start_date, end_dat
     
 
     if not results.empty:
-        results['link'] = results['link'].apply(lambda x: urllib.parse.urljoin(base_url, x))
+        results.loc[:, 'link'] = results['link'].apply(lambda x: urllib.parse.urljoin(base_url, x))
         return pd.DataFrame(results).drop_duplicates(subset = 'link', keep = 'last').to_dict(orient = 'records')
 

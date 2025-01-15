@@ -31,7 +31,7 @@ for l_idx, legislator in officials.iterrows():
     print(legislator['first_name'], legislator['last_name'], l_idx)
 
     ## Get Date Ranges
-    start_date = datetime.date(2024,6,3)
+    start_date = datetime.date(2024,1,1)
 
     dbx = dataset.connect(db)
     max_date = sql.select([sql.func.max(dbx[ingestor.tablename].table.c.date)]).where(dbx[ingestor.tablename].table.c.bioguide_id == legislator['bioguide_id']).execute().first()[0]
