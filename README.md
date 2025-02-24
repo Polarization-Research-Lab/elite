@@ -15,7 +15,8 @@ We try to keep our code as open as possible, with our primary monorepo public by
 - `money`: pulls `fec.gov` bulk data on election donations
 - `newsletters`: pulls newsletters from [DC Inbox](https://www.dcinbox.com/)
 - `officials`: code for curating the profile data of federal and state legislators
-    - relying primarily on the [unitedstates/congress-legislators repo](https://github.com/unitedstates/congress-legislators)
+    - for federal legislators: we rely primarily on the [unitedstates/congress-legislators repo](https://github.com/unitedstates/congress-legislators)
+    - for state legislators: we rely primarily on the [openstates/people repo](https://github.com/openstates/people)
 - `rhetoric`: code for classifying legislators rhetoric using LLMs
 - `statements`: public statements scraped from US legislators' websites
     - ^ we used to use [Propublica](https://www.propublica.org/) for this, but they shut down their API. we built our own internal tool which seems to work but will require some effort to maintain properly
