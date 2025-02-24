@@ -1,0 +1,17 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+# Setup
+source ../../env
+
+# Execute Actual commands we care about
+(
+    set -e
+
+    # Run sync command
+    cd "google sheets/"
+    $py3 "synchronize.py"
+
+    # track changes
+    $py3 check_version_history.py
+)

@@ -1,0 +1,21 @@
+starting
+None
+Traceback (most recent call last):
+  File "/prl/code/elite/statements/ingest.py", line 47, in <module>
+    ingestor.ingest(legislator, start_date, end_date, db, logdb)
+  File "/prl/code/elite/statements/ingestor.py", line 50, in ingest
+    legislator['full_name'] = legislator.apply(lambda x: f"{x['first_name']} {x['last_name']}", axis = 1)
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/series.py", line 4758, in apply
+    return SeriesApply(
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/apply.py", line 1201, in apply
+    return self.apply_standard()
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/apply.py", line 1281, in apply_standard
+    mapped = obj._map_values(
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/base.py", line 921, in _map_values
+    return algorithms.map_array(arr, mapper, na_action=na_action, convert=convert)
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/algorithms.py", line 1812, in map_array
+    return lib.map_infer(values, mapper, convert=convert)
+  File "lib.pyx", line 2917, in pandas._libs.lib.map_infer
+  File "/prl/code/.os/py39/lib/python3.9/site-packages/pandas/core/apply.py", line 1270, in curried
+    return func(x, *self.args, **self.kwargs)
+TypeError: <lambda>() got an unexpected keyword argument 'axis'
