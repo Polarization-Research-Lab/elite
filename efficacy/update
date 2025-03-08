@@ -1,0 +1,21 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+set -a; source ../env; set +a
+
+# Run
+echo "--- START: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+
+mkdir -p .tmp/
+
+echo "Downloading data"
+$py3 ingest.py
+
+echo "Pushing to database"
+$py3 digest.py
+
+rm -r .tmp/
+
+# # ## Add Timestamp
+echo "--- FIN: [$(date '+%Y-%m-%d %H:%M:%S')] $1 ---"
+echo "============"

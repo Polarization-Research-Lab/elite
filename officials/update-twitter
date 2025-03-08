@@ -1,0 +1,8 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+# Setup
+source ../../env
+
+# Execute Actual commands we care about
+$py3 "get twitter ids from handles.py"

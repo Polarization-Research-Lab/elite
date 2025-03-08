@@ -1,0 +1,82 @@
+CHUNK DATA AND INSERT INTO DATABASE
+start
+---pushed 361 items from tweets for date 2025-02-15---
+---pushed 302 items from newsletters for date 2025-02-15---
+---pushed 1088 items from tweets_state for date 2025-02-15---
+---pushed 123 items from floor for date 2025-02-14---
+---pushed 758 items from tweets for date 2025-02-14---
+---pushed 1032 items from tweets_state for date 2025-02-14---
+end
+CLASSIFY NEWLY INSERTED DATA
+
+RUNNING COLLECTION
+count: 3671
+chunksize: 1000
+num_chunks: 4
+
+	Collecting chunk 0
+error with 2215740, -----&gt;: string indices must be integers
+bad json detected
+error with 2660074, ----&gt;: string indices must be integers
+bad json detected
+	 ** classification successful **
+	 ** upsert successful **
+
+----------------classified: 1000 items--------------
+
+
+	Collecting chunk 1
+error with 2215740, -----&gt;: string indices must be integers
+error with 2659874, ###: string indices must be integers
+error with 2660074, ----&gt;: string indices must be integers
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+	 ** classification successful **
+	 ** upsert successful **
+
+----------------classified: 1000 items--------------
+
+
+	Collecting chunk 2
+error with 2215740, -----&gt;: string indices must be integers
+error with 2659874, ###: string indices must be integers
+error with 2660074, ----&gt;: string indices must be integers
+bad json detected
+bad json detected
+error with 2671689, ?: string indices must be integers
+bad json detected
+bad json detected
+bad json detected
+	 ** classification successful **
+	 ** upsert successful **
+
+----------------classified: 1000 items--------------
+
+
+	Collecting chunk 3
+error with 2215740, -----&gt;: string indices must be integers
+error with 2659874, ###: string indices must be integers
+error with 2660074, ----&gt;: string indices must be integers
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+bad json detected
+	 ** classification successful **
+	 ** upsert successful **
+
+----------------classified: 695 items--------------
+
+
+==== DONE ====

@@ -1,0 +1,15 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+# Setup
+source ../../env
+
+# Execute Actual commands we care about
+(
+    set -e # <-- makes it so that if a script throws an error it halts the whole process
+
+    $py3 annotate.py
+
+    set +e
+    # ...
+)

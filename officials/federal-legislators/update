@@ -1,0 +1,26 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+# Setup
+source ../../env
+
+# Execute Actual commands we care about
+set -e
+
+echo "=== UPDATING EXISTING FEDERAL LEGISLATORS ==="
+echo "-- UPDATING GITHUB REPOS:"
+cd unitedstates/congress-legislators
+git pull
+cd ../images
+git pull
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+echo "-- TRANSFERING DATA"
+$py3 "push-to-internal-database.py"
+
+echo "-- UPDATING SERVING PUBLIC AND POSITION COLUMNS"
+$py3 "add serving since.py"
+
+echo "-- UPDATING IMAGES" # in case we add our own
+rsync -av --ignore-existing unitedstates/images/congress/450x550/ images/set/
+echo "_ _ _ _ _ _ _ _"

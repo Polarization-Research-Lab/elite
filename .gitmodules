@@ -1,0 +1,9 @@
+[submodule "officials/federal-legislators/unitedstates/congress-legislators"]
+	path = officials/federal-legislators/unitedstates/congress-legislators
+	url = https://github.com/unitedstates/congress-legislators.git
+[submodule "officials/federal-legislators/unitedstates/images"]
+	path = officials/federal-legislators/unitedstates/images
+	url = https://github.com/unitedstates/images.git
+[submodule "officials/state-legislators/openstates/people"]
+	path = officials/state-legislators/openstates/people
+	url = https://github.com/openstates/people.git

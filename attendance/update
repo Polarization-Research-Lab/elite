@@ -1,0 +1,11 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../env
+
+set -e
+
+# Run
+mkdir -p .tmp/
+$py3 ingest.py
+$py3 digest.py
+rm -r .tmp/

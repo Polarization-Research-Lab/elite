@@ -1,0 +1,46 @@
+# Block all files and directories by default
+*
+.*  # Ignore hidden files and directories
+
+# Unignore the `.gitignore` file itself
+!.gitignore
+
+# Unignore directories, but allow Git to traverse the parent directory
+!*/
+
+!README.md
+!officials/**
+!attendance/**
+!efficacy/**
+!ideology/**
+!money/**
+!rhetoric/**
+!floor/**
+!newsletters/**
+!twitter/**
+!statements/**
+!tv/**
+
+
+# Block
+.*/
+env
+tv/search/
+ads/
+-/
+statements/test/
+
+# officials/federal-legislators/unitedstates/congress-legislators/*
+# officials/state-legislators/openstates/people
+
+officials/state-legislators/images/set/*
+officials/federal-legislators/images/set/*
+
+## Python
+__pycache__/
+
+## macOS
+.DS_Store
+
+## Windows
+desktop.ini

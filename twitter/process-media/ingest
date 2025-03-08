@@ -1,0 +1,14 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+source ../../env
+
+## Python
+(
+    set -e # start error-stop mode
+
+    ## Run
+    echo "PULL IMAGES FOR NEWLY INSERTED DATA"
+    $py3 -u pull-images-from-url.py
+
+    set +e # exit error-stop mode
+)

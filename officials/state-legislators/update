@@ -1,0 +1,41 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script is in
+
+# Setup
+source ../../env
+
+# Execute Actual commands we care about
+(
+    set -e
+
+    # Update openstates repo and update database
+    echo "=== UPDATE OPENSTATES REPO AND PULL DATA ==="
+    cd openstates/people
+    git pull
+    cd .. 
+    $py3 "openstates repo --> db table.py"
+    $py3 "openstates table --> officials table.py"
+    cd ..
+
+    echo "=== PUSH CURATED GOOGLE SHEETS -TO-> DB ==="
+    ./sync
+
+    echo "=== OVERWRITE DB WITH DATA FROM OPENSTATES ==="
+    cd openstates
+    $py3 "officials openstates column --> empty cells.py"
+    cd ..
+
+    echo "=== PUSH THOSE CHANGES TO GOOGLE SHEETS ==="
+    cd "google sheets/"
+    $py3 "synchronize.py" --skip-pull-from-sheets # <-- the ./sync file pulls from the sheets; this --skip-pull... tag skips the pull step
+    cd ..
+
+    echo "UPDATE IMAGES"
+    cd images
+    $py3 "save images.py"
+    cd set/
+    mogrify -quality 85 -strip *.jpg
+    optipng -o7 *.png
+    cd ../..
+)
+# ^ this order of operations minimizes time between db update and spreadsheet update (there'll probably be like a 40ish second lag window; but only at nighttime)

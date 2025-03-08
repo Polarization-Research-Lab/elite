@@ -1,0 +1,16 @@
+#!/bin/bash
+cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the parent directory of this script
+source ../../env
+
+mkdir -p .tmp/rhetoric/
+
+# Collect Data
+echo "COLLECTING DATA; SAVING LOCALLY"
+$py3 collect.py
+
+# Push to S3 (which will automatically push to cloudfront)
+echo "PUSHING DATA; SENDING TO S3"
+aws s3 sync .tmp/ s3://prl-public/downloads/elite-data/ --size-only --storage-class REDUCED_REDUNDANCY
+
+rm -r .tmp/
+
