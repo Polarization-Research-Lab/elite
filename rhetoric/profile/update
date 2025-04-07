@@ -5,7 +5,4 @@ cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script
 source ../../env
 
 # Execute Actual commands we care about
-(
-    set -e
-    $py3 build.py
-)
+$py3 build.py

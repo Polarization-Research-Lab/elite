@@ -1,8 +1,7 @@
 ---
 title: PRL Elite Data
+description: All of the code handling the curation and annotation (classification) of elite rhetoric (collected from various sources).
 ---
-
-
 
 # Why can't I run this?
 

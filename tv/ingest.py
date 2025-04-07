@@ -13,7 +13,8 @@ import ingestor
 # Setup
 dotenv.load_dotenv('../env')
 dotenv.load_dotenv(os.environ['PATH_TO_SECRETS'])
-api_key = os.environ['CONGRESS_API']
+# print(os.environ['IA_ACCESS_KEY'])# = 'YOUR_ACCESS_KEY'
+# os.environ['IA_SECRET_KEY']# = 'YOUR_SECRET_KEY'
 
 ## Connect to DB
 db = f"{os.environ['DB_DIALECT']}://{os.environ['DB_USER']}:{urllib.parse.quote(os.environ['DB_PASSWORD'])}@localhost:{os.environ['DB_PORT']}/elite"

@@ -1,8 +1,3 @@
-'''
----
-title: Legislator Newsletter Ingester
----
-'''
 # Python Standard Library
 import os, json, datetime, tempfile, time, csv
 import urllib
@@ -13,7 +8,6 @@ import requests
 import internetarchive # <-- api for getting the tv data
 
 # Internal Resources
-
 
 tablename = 'tv'
 

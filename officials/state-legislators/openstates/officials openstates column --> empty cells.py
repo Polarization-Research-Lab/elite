@@ -44,11 +44,16 @@ states = (
     .to_list()
 ) 
 
-print(officials_state.shape)
 all_updates = []
 party=[]
 for o, official in officials_state.iterrows():
-    openstates = json5.loads(official['openstates_data'])
+    data = official['openstates_data']
+    
+    if isinstance(official['openstates_data'], dict):
+        openstates = official['openstates_data']
+    else:
+        openstates = json5.loads(official['openstates_data'])
+
     updates = {}
 
     updates['first_name'] = openstates.get('given_name')

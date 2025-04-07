@@ -143,7 +143,7 @@ def ingest(legislator, start_date, end_date, db, logdb, api_key):
 
         if legislator['level'] == 'national':
             # upsert tweets
-            # dbx['tweets'].upsert_many(entries, ['tweet_id'])
+            dbx['tweets'].upsert_many(entries, ['tweet_id'])
 
             # upsert media
             media_entries = [entry for entry in entries if entry.get('media_urls')]
@@ -162,8 +162,7 @@ def ingest(legislator, start_date, end_date, db, logdb, api_key):
                 )
 
         elif legislator['level'] == 'state':
-            # dbx['tweets_state'].upsert_many(entries, ['tweet_id'])
-            pass
+            dbx['tweets_state'].upsert_many(entries, ['tweet_id'])
 
         else:
             print(f"what's wrong with the level attr of {legislator['first_name']} {legislator['last_name']}? level attr: {legislator['level']}")

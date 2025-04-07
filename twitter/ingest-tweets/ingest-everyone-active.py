@@ -26,7 +26,7 @@ officials = pd.DataFrame(dbx['officials'].find(active = True))
 print('start counts | federal:', dbx['tweets'].count(), 'state:', dbx['tweets_state'].count())
 dbx.engine.dispose(); dbx.close()
 
-for l_idx, legislator in officials.iloc[:100].iterrows():
+for l_idx, legislator in officials.iterrows():
 
     # print(legislator['first_name'], legislator['last_name'], l_idx, legislator['level'])
 
@@ -47,10 +47,9 @@ for l_idx, legislator in officials.iloc[:100].iterrows():
     max_date = sql.select([sql.func.max(dbx[tablename].table.c.date)]).where(dbx[tablename].table.c[id_col] == legislator[id_col]).execute().first()[0]
     dbx.engine.dispose(); dbx.close()
 
-    if max_date: start_date = max_date + datetime.timedelta(days=1)
+    if max_date: start_date = max_date # <-- ensure we capture a little overlap, so we dont miss anything
 
-    # end_date = (datetime.datetime.now() - datetime.timedelta(days = 1)).date()
-    end_date = datetime.datetime.now().date()
+    end_date = (datetime.datetime.now() - datetime.timedelta(days = 1)).date()
 
     # Execute Harvester
     if start_date < end_date:

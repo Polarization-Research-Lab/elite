@@ -12,7 +12,7 @@ import pandas as pd
 import dask.dataframe as dd  
 
 import sqlalchemy as sql
-import dataset as database
+import dataset
 import ibis
 from ibis import _
 
@@ -109,12 +109,14 @@ for c in range(num_chunks):
 
     print('\t ** classification successful **')
 
-    with database.connect(params) as dbx:
-        chunk = chunk.replace({np.nan: None})
-        dbx['classifications'].upsert_many(
-            chunk.to_dict(orient = 'records'),
-            'id'
-        )
+    chunk = chunk.replace({np.nan: None})
+    
+    dbx = dataset.connect(params)
+    dbx['classifications'].upsert_many(
+        chunk.to_dict(orient = 'records'),
+        'id'
+    )
+    dbx.engine.dispose(); dbx.close()
 
     print('\t ** upsert successful **')
     print(f'\n----------------classified: {chunk.shape[0]} items--------------\n\n')

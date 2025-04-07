@@ -144,8 +144,7 @@ for i in range(0, item_count, chunksize):
     sample['image_text'] = sample['image_text'].astype(str)
 
     # Save to db
-    db = f"{os.environ['DB_DIALECT']}://{os.environ['DB_USER']}:{urllib.parse.quote(os.environ['DB_PASSWORD'])}@localhost:{os.environ['DB_PORT']}/elite" # <-- note, we assign the database to be "research" where you DO have ALTER access
-    dbx = dataset.connect(db)
+    dbx = dataset.connect(params)
     dbx['tweets_media'].upsert_many(
         sample[['id', 'raw_gpt_output', 'full_json_output', 'image_description', 'is_text','image_text','image_objects','image_tweet', 'annotated']].to_dict(orient = 'records'),
         ['id']

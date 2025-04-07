@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd 
 import dotenv
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -32,6 +33,7 @@ sheets_service = build('sheets', 'v4', credentials=creds)
 # # # # # # # # #
 # PULL SPREADSHEET AS DATAFRAME
 # # # # # # # # #
+@retry(stop = stop_after_attempt(3), wait = wait_exponential(multiplier=10, min=10, max=60))
 def pull_data(sheetname, folder):
     try:
         # Step 1: Retrieve the spreadsheet ID based on the sheet name within the specified folder
@@ -83,6 +85,7 @@ def pull_data(sheetname, folder):
 # # # # # # # # #
 # PUSH DATAFRAME TO SPREADSHEET
 # # # # # # # # #
+@retry(stop = stop_after_attempt(3), wait = wait_exponential(multiplier=10, min=10, max=60))
 def push_data(sheetname, folder, data):
     try:
 
@@ -245,6 +248,7 @@ def push_data(sheetname, folder, data):
 # # # # # # # # #
 # RUN VERSION CHECK
 # # # # # # # # #
+@retry(stop = stop_after_attempt(3), wait = wait_exponential(multiplier=10, min=10, max=60))
 def get_version_history(sheetname, folder):
     """Retrieve version history for a Google Sheet"""
     
@@ -286,3 +290,4 @@ def get_version_history(sheetname, folder):
             "export_links": rev.get("exportLinks", {}),  # Exportable links (for downloadable formats)
         })
     return version_history
+    

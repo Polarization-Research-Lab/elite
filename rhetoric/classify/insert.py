@@ -12,7 +12,7 @@ import dotenv
 import numpy as np 
 import pandas as pd
 import sqlalchemy as sql
-import dataset as database
+import dataset
 import ibis
 from ibis import _
 
@@ -33,7 +33,12 @@ conn = ibis.mysql.connect(
 )
 classifications = conn.table('classifications')
 
-federal_tables = ['floor', 'tweets', 'statements', 'newsletters']
+federal_tables = [
+    'floor',
+    'tweets',
+    'statements',
+    'newsletters'
+]
 state_tables = ['tweets_state']
 
 # Chunk text data, then load it into the Database
@@ -50,11 +55,10 @@ for d, day in enumerate(range((today - beginning_date).days + 1)):
     # source_classifications = classifications.filter(classifications.source == source)
     for source in federal_tables + state_tables:
         source_table = conn.table(source)
-        
         ids_for_date = (
             source_table
-            .select([source_table.id])
-            .filter(source_table.date == target_date)
+            .filter([_.date == target_date, _.text.notnull()])
+            .select([_.id, _.date])
             .execute()
         )
 
@@ -76,15 +80,15 @@ for d, day in enumerate(range((today - beginning_date).days + 1)):
                 if source in state_tables:
                     items = (
                         source_table
-                        .select([source_table.id, source_table.openstates_id, source_table.text, source_table.date])
-                        .filter([source_table.date == target_date, source_table.id.isin(missing_ids['id'].values)])
+                        .select([_.id, _.openstates_id, _.text, _.date])
+                        .filter([_.date == target_date, _.id.isin(missing_ids['id'].values)])
                         .execute()
                     )
                 else:
                     items = (
                         source_table
-                        .select([source_table.id, source_table.bioguide_id, source_table.text, source_table.date])
-                        .filter([source_table.date == target_date, source_table.id.isin(missing_ids['id'].values)])
+                        .select([_.id, _.bioguide_id, _.text, _.date])
+                        .filter([_.date == target_date, _.id.isin(missing_ids['id'].values)])
                         .execute()
                     )
 
@@ -99,10 +103,12 @@ for d, day in enumerate(range((today - beginning_date).days + 1)):
                 items['errors'] = items.apply(lambda row: {}, axis = 1).astype(object)
                 items = items.fillna(np.nan).replace([np.nan], [None])
 
-                with database.connect(params) as dbx:
-                    dbx['classifications'].insert_many(
-                        items.to_dict(orient = 'records'),
-                    )
+                dbx = dataset.connect(params)
+                dbx['classifications'].insert_many(
+                    items.to_dict(orient = 'records'),
+                )
+                dbx.engine.dispose(); dbx.close()
+
                 print(f'---pushed {items.shape[0]} items from {source} for date {target_date}---')
 
 print('end')

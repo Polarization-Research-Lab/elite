@@ -4,8 +4,7 @@ cd "$(dirname "$(realpath "$0")")"/ # <-- CD into the directory that this script
 # Setup
 source ../env
 
-# Execute Actual commands we care about
-(
-    set -e
-    $py3 ingest.py
-)
+echo 'test'
+
+$py3 "1 - ingest urls.py"
+$py3 "2 - scrape text from urls.py"

@@ -10,5 +10,5 @@ title: Floor Speech Data Ingestor
 
 Sources:
 
-- data comes from the US gov's 
-- the []() is lifted from Nick Judd's [congressional-record module](https://github.com/unitedstates/congressional-record)
+- data comes from the [US gov's congress website](https://www.congress.gov/)
+- the [congressionalrecord.py](./congressionalrecord.py) is lifted from Nick Judd's [congressional-record module](https://github.com/unitedstates/congressional-record)

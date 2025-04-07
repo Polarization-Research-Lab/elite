@@ -18,7 +18,13 @@ conn = ibis.mysql.connect(
     database='elite',
 )
 
-legislators = conn.table('legislators').filter(_.is_active == 1)
+officials = (
+    conn.table('officials')
+    .mutate(
+        full_name = (_.first_name + ibis.literal(' ') + _.last_name)
+    )
+    .filter([_.active == 1, _.level == 'national'])
+)
 tweets = conn.table('tweets')
 classifications = conn.table('classifications')
 
@@ -46,15 +52,15 @@ for year in years:
         # .limit(10) # <-- for testing (otherwise it takes a while)
     )
 
-    # Join the year_data with legislators on 'bioguide_id'
+    # Join the year_data with officials on 'bioguide_id'
     joined_data = (
-        year_data.join(legislators, year_data['bioguide_id'] == legislators['bioguide_id'])
+        year_data.join(officials, year_data['bioguide_id'] == officials['bioguide_id'])
         .select(
             year_data,  # select all columns from year_data
-            legislators['first_name'], 
-            legislators['last_name'], 
-            legislators['state'], 
-            legislators['type']  # select only specific columns from legislators
+            officials['first_name'], 
+            officials['last_name'], 
+            officials['state'], 
+            officials['type']  # select only specific columns fromofficials 
         )
     )
     
@@ -136,7 +142,7 @@ money = money.rename(**{f'money_{col}': col for col in money.columns if col not 
 rhetoric = rhetoric.rename(**{f'communication_{col}': col for col in rhetoric.columns if col not in ['id', 'bioguide_id']}) 
 
 profiles = (
-    legislators
+   officials 
     .select(['bioguide_id', 'full_name'])
     .left_join(ideology, ideology.bioguide_id == _.bioguide_id).drop(['id', 'bioguide_id_right'])
     .left_join(efficacy, efficacy.bioguide_id == _.bioguide_id).drop(['id', 'bioguide_id_right'])

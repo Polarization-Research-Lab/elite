@@ -2,6 +2,8 @@
 title: Legislator Efficacy
 ---
 
+Pulls data from voteview to get a sense of how often legislators vote on issues and sponsor bills.
+
 # How it works:
 
 - Data is downloaded with `ingest.py`

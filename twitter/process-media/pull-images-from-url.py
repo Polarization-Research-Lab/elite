@@ -99,6 +99,7 @@ def download_image(row):
 joined = (
     tweets_media
     .filter([(_.saved != 1) | (_.saved.isnull())])
+    .filter([_.url.notnull()])
     .execute()
 )
 
@@ -109,8 +110,9 @@ for start in range(0, len(joined), chunk_size):
     chunk = joined.iloc[start:start + chunk_size]
     chunk['saved'] = chunk.apply(download_image, axis=1, result_type='expand')
 
-    with dataset.connect(params) as dbx:
-        dbx['tweets_media'].upsert_many(
-            chunk[['saved','id']].to_dict(orient='records'),
-            'id'
-        )
+    dbx = dataset.connect(params)
+    dbx['tweets_media'].upsert_many(
+        chunk[['saved','id']].to_dict(orient='records'),
+        'id'
+    )
+    dbx.engine.dispose(); dbx.close()

@@ -33,9 +33,9 @@ source ../../env
     echo "UPDATE IMAGES"
     cd images
     $py3 "save images.py"
-    cd set/
-    mogrify -quality 85 -strip *.jpg
-    optipng -o7 *.png
-    cd ../..
+    # cd set/
+    # mogrify -quality 85 -strip *.jpg
+    # optipng -o7 *.png
+    # cd ../..
 )
 # ^ this order of operations minimizes time between db update and spreadsheet update (there'll probably be like a 40ish second lag window; but only at nighttime)
