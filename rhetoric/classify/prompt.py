@@ -2,15 +2,16 @@ import re, ast
 import llms
 import hjson
 
-prompt = """
-Evaluate the provided text, with JSON results
+# System prompt - contains all the classification instructions
+system_prompt = """
+You are a political text classifier. Evaluate the provided text for the following tasks and return results in JSON format.
 
-Evaluate each of the following tasks sequentially.  
+Evaluate each of the following tasks sequentially:
 
 Attacks: 
 
 Task: Assess the text for a personal_attack (output either "yes" or "no"). If "yes", specify both the attack_type and personal_attack_target as described below. If "no", set "attack_type" and "personal_attack_target" as null.
-Definition of Personal Attack (attack_type): A personal attack explicitly questions an individual’s character, integrity, intelligence, morality, or patriotism. Opposition to an individual or their policy choices does not count. Personal attacks must be directly and explicitly critical of traits like integrity or loyalty in a way that cannot be interpreted as policy disagreement. Statements implying a lack of interest or attention to a policy issue are not considered personal attacks. Opposition to an individual’s professional decisions, official actions, or leadership in their official role does not count. 
+Definition of Personal Attack (attack_type): A personal attack explicitly questions an individual's character, integrity, intelligence, morality, or patriotism. Opposition to an individual or their policy choices does not count. Personal attacks must be directly and explicitly critical of traits like integrity or loyalty in a way that cannot be interpreted as policy disagreement. Statements implying a lack of interest or attention to a policy issue are not considered personal attacks. Opposition to an individual's professional decisions, official actions, or leadership in their official role does not count. 
 character: Explicitly saying someone as lazy, unreliable, stupid, etc.
 integrity: Explicit accusations that someone is dishonest, lies, embellishes the truth, or lacks integrity.
 intelligence: Claims that someone is mentally unfit, unintelligent, incompetent, or otherwise mentally incapable.
@@ -23,7 +24,7 @@ Critique job performance, policies, legislation, or appointments without explici
 Require assumptions or interpretations 
 Question leadership decisions
 Question someone's support for US policy, foreign policy or an ally
-Are not explicit and overt in questioning an individual’s personal traits.
+Are not explicit and overt in questioning an individual's personal traits.
 Critique someone's official role in government 
 Merely respond to or mention an attack.
 Refer to an attack in a general sense, such as on "attackers," rather than individuals.
@@ -36,7 +37,8 @@ Only include statements as attacks if they meet all conditions outlined above
 
 Extremism:
 Task: Assess the text for extreme_label (output either "yes" or "no"). If "yes", ensure the text meets the criteria below. If "no", output "extreme_label":"no".
-Definition: A text contains an extreme label if it calls an American politician, the Democratic or Republican party, or a policy: far left, far right, MAGA, extreme, radical, fascist, or communist.
+Definition: A text contains an extreme label if it calls an American politician, the Democratic or Republican party, or a policy: far left, far right, MAGA, extreme, radical, woke, fascist, or communist.
+extreme_target: If extreme_label is "yes", identify the person(s) or group(s) described as extreme. Use no more than two words per entry, and remove any titles.
 
 Policy criticism:
 
@@ -67,7 +69,7 @@ Definition: Evaluate whether the text discusses public policy by identifying any
 Here are a list of policy areas:
 
 "Agriculture and Food": agricultural practices; agricultural prices and marketing; agricultural education; food assistance or nutrition programs; food industry, supply, and safety; aquaculture; horticulture and plants. 
-"Armed Forces and National Security": military operations and spending, facilities, procurement and weapons, personnel, intelligence; strategic materials; war and emergency powers; veterans’ issues. 
+"Armed Forces and National Security": military operations and spending, facilities, procurement and weapons, personnel, intelligence; strategic materials; war and emergency powers; veterans' issues. 
 "Civil Rights and Liberties, Minority Issues": discrimination on basis of race, ethnicity, age, sex, gender, health or disability; First Amendment rights; due process and equal protection; abortion rights; privacy. 
 "Commerce": business investment, development, regulation; small business; consumer affairs; competition and restrictive trade practices; manufacturing, distribution, retail; marketing; intellectual property. 
 "Crime and Law Enforcement": criminal offenses, investigation and prosecution, procedure and sentencing; corrections and imprisonment; juvenile crime; law enforcement administration. 
@@ -95,43 +97,51 @@ Here are a list of policy areas:
 Variable: policy_area
 which of the policy labels from the list above apply to the text.
 
-{{
-    "attacks": {{
+Return your response in this exact JSON format:
+
+{
+    "attacks": {
         "personal_attack": ,
         "attack_type": [],
         "personal_attack_target": ,
-    }},
-    "extremism": {{
-        "extreme_label":
-    }},
-    "policy_criticism": {{
+    },
+    "extremism": {
+        "extreme_label":,
+        "extreme_target":,
+    },
+    "policy_criticism": {
         "policy_attack": ,
-    }},
-    "bipartisanship": {{
+    },
+    "bipartisanship": {
         "is_bipartisanship": ,
-    }},
-    "credit_claiming": {{
+    },
+    "credit_claiming": {
         "is_creditclaiming": ,
-    }},
-    "policy": {{
+    },
+    "policy": {
         "policy_area": [],
-    }}
-}}
-
-Here is the following text. It might be incomplete; just analyze it like we asked. Text: "{target}"
+    }
+}
 """
 
-def pipeline(row):
+# User prompt template - just the text to analyze
+def get_user_prompt(text):
+    """Generate user prompt with the text to analyze"""
+    return f"Analyze this text: {text}"
+
+def pipeline_optimized(row):
+    """Optimized pipeline using system prompt"""
     new_row = row.copy()
-    new_row['classified'] = 0 # <-- start by setting this to false. switch to true only if the function finishes to the end
+    new_row['classified'] = 0
+    
     try:
-
-        query = prompt.format(target = new_row['text'])
-
-        response = llms.chatgpt(query)
+        user_message = get_user_prompt(new_row['text'])
+        response = llms.chatgpt_with_system(user_message, system_prompt)
         
-        if response.lstrip().startswith("```json"): response = response.lstrip()[7:] # Remove the initial json and any whitespace before it
-        if response.rstrip().endswith("```"): response = response.rstrip()[:-3] # Remove the final
+        if response.lstrip().startswith("```json"): 
+            response = response.lstrip()[7:]
+        if response.rstrip().endswith("```"): 
+            response = response.rstrip()[:-3]
 
         try:
             response = hjson.loads(response)
@@ -143,14 +153,11 @@ def pipeline(row):
         new_row['attack_type'] = str(response['attacks']['attack_type'])
         new_row['attack_target'] = str(response['attacks']['personal_attack_target'])
         new_row['attack_policy'] = yesno(response['policy_criticism']['policy_attack'])
-
         new_row['outcome_bipartisanship'] = yesno(response['bipartisanship']['is_bipartisanship'])
-
         new_row['outcome_creditclaiming'] = yesno(response['credit_claiming']['is_creditclaiming'])
-
         new_row['policy_area'] = str(response['policy']['policy_area'])
-
         new_row['extreme_label'] = str(response['extremism']['extreme_label'])
+        new_row['extreme_target'] = str(response['extremism']['extreme_target'])
 
         if len(hjson.loads(new_row['policy_area'])) > 0:
             new_row['policy'] = 1
@@ -162,7 +169,7 @@ def pipeline(row):
     except Exception as e:
         print(f'error with {new_row["id"]}, {new_row["text"]}: {e}')
 
-    return new_row 
+    return new_row
 
 def yesno(x):
     if x:
@@ -173,3 +180,6 @@ def yesno(x):
             return 0
         else:
             return None
+
+# Main pipeline function
+pipeline = pipeline_optimized 

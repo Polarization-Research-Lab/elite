@@ -24,7 +24,7 @@ def cautious_fetch(max_retries=5, wait_time=7):
 
 # OpenAI
 @cautious_fetch(max_retries=5, wait_time=7)
-def chatgpt(message, model = 'gpt-4o'):
+def chatgpt(message, model = 'o4-mini'):
     messages = [{
         'role': 'user',
         'content': message,
@@ -35,7 +35,7 @@ def chatgpt(message, model = 'gpt-4o'):
             # model = "gpt-3.5-turbo-1106",
             # model = "gpt-4-1106-preview",
             # model = "gpt-4-turbo-2024-04-09",
-            # model = "gpt-4o",
+            # model = "o4-mini",
             model = model,
             messages = messages,
             temperature = 0.8,
@@ -44,50 +44,94 @@ def chatgpt(message, model = 'gpt-4o'):
         response = response.choices[0].message.content
     return response
 
+# OpenAI with system prompt (more efficient)
+@cautious_fetch(max_retries=5, wait_time=7)
+def chatgpt_with_system(user_message, system_message, model = 'o4-mini'):
+    messages = [
+        {
+            'role': 'system',
+            'content': system_message,
+        },
+        {
+            'role': 'user',
+            'content': user_message,
+        }
+    ]
 
-def send_batch(data, prompt, model):
+    with openai.OpenAI() as client:
+        response = client.chat.completions.create(
+            model = model,
+            messages = messages,
+            temperature = 0.8,
+        )
+        response = response.choices[0].message.content
+    return response
 
+
+def send_batch_with_system(data, prompt_name, system_prompt, model):
+    """Send batch with system prompt for better efficiency"""
+    
     records = data.apply(
         lambda entry: {
-            "custom_id": f"{prompt}-{entry['id']}",
+            "custom_id": f"{prompt_name}-{entry['id']}",
             "method": "POST",
             "url": "/v1/chat/completions",
             "body":
             {
                 "model": model,
                 "messages": [
-                {
-                    "role": "user",
-                    "content": entry['message']
-                }],
-                "max_tokens": 1000
+                    {
+                        "role": "system",
+                        "content": system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": entry['user_message']
+                    }
+                ],
+                "max_tokens": 1000,
+                "temperature": 0.8
             }
         }, 
         axis = 1
     )
 
-    max_file_size = 50000000
+    # OpenAI Batch API limits: 50,000 requests and 200MB per batch
+    max_requests_per_batch = 50000
+    max_file_size = 209715200  # 200MB in bytes
     
     batches = []
-        
-    # with tempfile.NamedTemporaryFile(dir = 'check', delete = False) as file: # <-- for testing
-    with tempfile.NamedTemporaryFile() as file:
-        records.to_json(file.name, orient = 'records', lines = True)
-        if os.path.getsize(file.name) > max_file_size:
-            print('SPLITTING')
-            objs = []
-            os.makedirs('./tmpsplitdir/', exist_ok = True)
-            subprocess.run(["split", "-C", f"{max_file_size}", file.name, './tmpsplitdir/'])
-            print(f'>>> files created in split: {len([file for file in os.listdir("./tmpsplitdir/")])}')
-            for subfile in os.listdir('./tmpsplitdir/'):
-                batch_id = api_call(os.path.join('./tmpsplitdir/', subfile), prompt = prompt)
+    
+    # Split data if it exceeds request limit
+    if len(records) > max_requests_per_batch:
+        print(f'SPLITTING BY REQUEST COUNT: {len(records)} requests > {max_requests_per_batch} limit')
+        for i in range(0, len(records), max_requests_per_batch):
+            chunk = records.iloc[i:i + max_requests_per_batch]
+            
+            with tempfile.NamedTemporaryFile() as file:
+                chunk.to_json(file.name, orient = 'records', lines = True)
+                batch_id = api_call(file.name, prompt = prompt_name)
                 batches.append(batch_id)
-                os.remove(os.path.join('./tmpsplitdir/', subfile))
-            os.rmdir('./tmpsplitdir/')
-        else:
-            print('NO SPLIT NEEDED')
-            batch_id = api_call(file.name, prompt = prompt)
-            batches.append(batch_id)
+                print(f'  Submitted batch chunk {i//max_requests_per_batch + 1} with {len(chunk)} requests')
+    else:
+        # Check file size and split if needed
+        with tempfile.NamedTemporaryFile() as file:
+            records.to_json(file.name, orient = 'records', lines = True)
+            if os.path.getsize(file.name) > max_file_size:
+                print(f'SPLITTING BY FILE SIZE: {os.path.getsize(file.name)} bytes > {max_file_size} limit')
+                objs = []
+                os.makedirs('./tmpsplitdir/', exist_ok = True)
+                subprocess.run(["split", "-C", f"{max_file_size}", file.name, './tmpsplitdir/'])
+                print(f'>>> files created in split: {len([file for file in os.listdir("./tmpsplitdir/")])}')
+                for subfile in os.listdir('./tmpsplitdir/'):
+                    batch_id = api_call(os.path.join('./tmpsplitdir/', subfile), prompt = prompt_name)
+                    batches.append(batch_id)
+                    os.remove(os.path.join('./tmpsplitdir/', subfile))
+                os.rmdir('./tmpsplitdir/')
+            else:
+                print('NO SPLIT NEEDED')
+                batch_id = api_call(file.name, prompt = prompt_name)
+                batches.append(batch_id)
 
     return batches
 
