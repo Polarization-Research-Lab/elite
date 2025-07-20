@@ -42,9 +42,9 @@ federal_tables = [
 state_tables = ['tweets_state']
 
 # Chunk text data, then load it into the Database
-today = datetime.date.today()
-# beginning_date = datetime.date(year=2023,month=12,day=30)
-beginning_date = datetime.date(year=2025,month=1,day=1)
+today = datetime.date(year=2017,month=6,day=25)# datetime.date.today()
+beginning_date = datetime.date(year=2017,month=6,day=21)
+# beginning_date = datetime.date(year=2025,month=1,day=1)
 # beginning_date = datetime.date(year=2022,month=8,day=1) # <-- go back to the beginning
 
 print('start')
