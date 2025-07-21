@@ -54,8 +54,8 @@ federal_tables = [
 state_tables = ['tweets_state']
 
 # Date range configuration
-today = datetime.date(year=2017, month=12, day=31)
-beginning_date = datetime.date(year=2017, month=6, day=21)
+today = datetime.date(year=2022, month=12, day=31)
+beginning_date = datetime.date(year=2018, month=1, day=1)
 
 def process_source_optimized(source, start_date, end_date):
     """
