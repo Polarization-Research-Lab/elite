@@ -2,6 +2,8 @@ import sys, time, json, os, copy, tempfile, subprocess
 import pandas as pd
 import openai
 
+
+
 # Exponential Backoff Decorator
 def cautious_fetch(max_retries=5, wait_time=7):
     def decorator_retry(func):
@@ -38,7 +40,6 @@ def chatgpt(message, model = 'o4-mini'):
             # model = "o4-mini",
             model = model,
             messages = messages,
-            temperature = 0.8,
             # max_tokens = 1,
         )
         response = response.choices[0].message.content
@@ -62,7 +63,6 @@ def chatgpt_with_system(user_message, system_message, model = 'o4-mini'):
         response = client.chat.completions.create(
             model = model,
             messages = messages,
-            temperature = 0.8,
         )
         response = response.choices[0].message.content
     return response
@@ -89,8 +89,7 @@ def send_batch_with_system(data, prompt_name, system_prompt, model):
                         "content": entry['user_message']
                     }
                 ],
-                "max_tokens": 1000,
-                "temperature": 0.8
+                "max_completion_tokens": 1000
             }
         }, 
         axis = 1

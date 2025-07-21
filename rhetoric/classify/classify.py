@@ -24,6 +24,7 @@ from batch_monitor import save_batch_ids
 
 dotenv.load_dotenv('../../../env')
 if 'PATH_TO_SECRETS' in os.environ:
+    print(os.environ['PATH_TO_SECRETS'])
     dotenv.load_dotenv(os.environ['PATH_TO_SECRETS'])
 else:
     print("Warning: PATH_TO_SECRETS environment variable not found")
@@ -68,14 +69,14 @@ def main():
             'extreme_target',
         ])
         .filter([
-            _.date >= '2017-01-03',
-            _.date <= '2017-01-05',
+            _.date >= '2017-06-23',
+            _.date <= '2017-12-31',
             (_.classified != 1) | _.classified.isnull()
         ])
     )
 
     count = unclassified_items.count().execute()
-    batch_size = 5000  # Items per database batch (within 50,000 API limit)
+    batch_size = 25000  # Items per database batch (within 50,000 API limit)
     
     print(f'''
 RUNNING OPTIMIZED BATCH CLASSIFICATION
