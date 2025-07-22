@@ -43,8 +43,37 @@ def get_db_connection():
 
 def prepare_batch_data_optimized(data):
     """Prepare data for optimized batch processing with system prompts"""
+    # Filter out empty or null text before processing
+    initial_count = len(data)
+    
+    # Remove rows with empty, null, or whitespace-only text
+    data = data[data['text'].notna()]  # Remove null/NaN
+    data = data[data['text'].str.strip() != '']  # Remove empty or whitespace-only
+    
+    filtered_count = len(data)
+    if filtered_count < initial_count:
+        removed_count = initial_count - filtered_count
+        print(f"⚠️  Filtered out {removed_count} items with empty/null text")
+    
     # Create user messages (much shorter than full prompt)
-    data['user_message'] = data['text'].apply(lambda x: prompt.get_user_prompt(x))
+    def safe_get_user_prompt(text):
+        try:
+            return prompt.get_user_prompt(text)
+        except ValueError as e:
+            print(f"⚠️  Skipping invalid text: {e}")
+            return None
+    
+    data['user_message'] = data['text'].apply(safe_get_user_prompt)
+    
+    # Remove any rows where user_message creation failed
+    initial_with_messages = len(data)
+    data = data[data['user_message'].notna()]
+    final_with_messages = len(data)
+    
+    if final_with_messages < initial_with_messages:
+        failed_prompts = initial_with_messages - final_with_messages
+        print(f"⚠️  Removed {failed_prompts} additional items due to prompt creation failures")
+    
     return data
 
 def main():
@@ -69,8 +98,8 @@ def main():
             'extreme_target',
         ])
         .filter([
-            _.date >= '2022-01-01',
-            _.date <= '2022-12-31',
+            _.date >= '2021-12-24',
+            _.date <= '2021-12-31',
             (_.classified != 1) | _.classified.isnull()
         ])
     )

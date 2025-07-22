@@ -10,6 +10,10 @@ import urllib.parse
 import hjson
 from ibis import _
 
+# Ensure logs directory exists
+LOGS_DIR = 'logs'
+os.makedirs(LOGS_DIR, exist_ok=True)
+
 dotenv.load_dotenv('../../../env')
 if 'PATH_TO_SECRETS' in os.environ:
     dotenv.load_dotenv(os.environ['PATH_TO_SECRETS'])
@@ -127,7 +131,7 @@ def download_batch_results(batch_id):
                     if batch.error_file_id:
                         try:
                             error_content = client.files.content(batch.error_file_id)
-                            error_file = f"batch_api_errors_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl"
+                            error_file = os.path.join(LOGS_DIR, f"batch_api_errors_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl")
                             with open(error_file, 'w') as f:
                                 f.write(error_content.read().decode('utf-8'))
                             print(f"🔍 Saved API errors to {error_file}")
@@ -151,7 +155,7 @@ def download_batch_results(batch_id):
                 return None, None
             
             # Save raw output file for backup
-            backup_file = f"batch_output_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl"
+            backup_file = os.path.join(LOGS_DIR, f"batch_output_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl")
             with open(backup_file, 'w') as f:
                 f.write(file_content)
             # Only print for debugging or when there might be issues
@@ -178,7 +182,7 @@ def download_batch_results(batch_id):
             
             # Save parse errors if any
             if parse_errors:
-                parse_error_file = f"parse_errors_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                parse_error_file = os.path.join(LOGS_DIR, f"parse_errors_{batch_id}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
                 with open(parse_error_file, 'w') as f:
                     json.dump(parse_errors, f, indent=2)
                 print(f"🔍 Saved {len(parse_errors)} parse errors to {parse_error_file}")
@@ -264,6 +268,20 @@ def process_batch_results_to_db(batch_results, backup_file=None):
             if cleaned_content.rstrip().endswith("```"): 
                 cleaned_content = cleaned_content.rstrip()[:-3]
             
+            # Check for specific empty text error before trying to parse JSON
+            if "statement to analyze wasn't included" in response_content or "statement to analyze wasn\u2019t included" in response_content:
+                error_msg = f"Empty text error for ID {original_id}: Model indicates no text was provided"
+                print(f"❌ {error_msg}")
+                error_log.append({
+                    'id': original_id, 
+                    'error': error_msg,
+                    'error_type': 'empty_text',
+                    'raw_content': response_content,
+                    'full_result': result
+                })
+                failed_responses.append(raw_response_data)
+                continue
+            
             # Parse JSON response
             try:
                 response = hjson.loads(cleaned_content)
@@ -313,7 +331,33 @@ def process_batch_results_to_db(batch_results, backup_file=None):
                     print(f"⚠️  Policy area parse warning for ID {original_id}: {policy_error}")
                     row_data['policy'] = 0
                 
-                processed_data.append(row_data)
+                # Check for null/missing critical fields and save to error file if found
+                critical_fields = ['attack_personal', 'attack_policy', 'outcome_bipartisanship', 'outcome_creditclaiming']
+                null_fields = [field for field in critical_fields if row_data[field] is None]
+                
+                if null_fields:
+                    error_msg = f"Null fields detected for ID {original_id}: {null_fields}"
+                    print(f"⚠️  {error_msg}")
+                    
+                    # Save the problematic response
+                    null_field_error = {
+                        'id': original_id,
+                        'error': error_msg,
+                        'null_fields': null_fields,
+                        'row_data': row_data,
+                        'raw_response': response,
+                        'full_result': result
+                    }
+                    error_log.append(null_field_error)
+                    failed_responses.append({
+                        'id': original_id,
+                        'custom_id': custom_id,
+                        'raw_content': response_content,
+                        'full_response': result,
+                        'reason': 'null_fields'
+                    })
+                else:
+                    processed_data.append(row_data)
                 
             except KeyError as key_error:
                 error_msg = f"Missing required field for ID {original_id}: {key_error}"
@@ -340,7 +384,7 @@ def process_batch_results_to_db(batch_results, backup_file=None):
     
     # Save error log if there were errors
     if error_log:
-        error_file = f"batch_errors_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        error_file = os.path.join(LOGS_DIR, f"batch_errors_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         with open(error_file, 'w') as f:
             json.dump(error_log, f, indent=2, default=str)
         print(f"🔍 Saved {len(error_log)} errors to {error_file}")
@@ -348,7 +392,7 @@ def process_batch_results_to_db(batch_results, backup_file=None):
     
     # Save failed responses for debugging
     if failed_responses:
-        failed_file = f"failed_responses_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        failed_file = os.path.join(LOGS_DIR, f"failed_responses_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         with open(failed_file, 'w') as f:
             json.dump(failed_responses, f, indent=2, default=str)
         print(f"🔍 Saved {len(failed_responses)} failed responses to {failed_file}")
@@ -387,7 +431,7 @@ def process_batch_results_to_db(batch_results, backup_file=None):
             error_msg = f"Database update failed: {db_error}"
             print(f"❌ {error_msg}")
             # Save processed data to file as backup
-            backup_file_path = f"db_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            backup_file_path = os.path.join(LOGS_DIR, f"db_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
             with open(backup_file_path, 'w') as f:
                 json.dump(processed_data, f, indent=2, default=str)
             print(f"💾 Saved processed data to backup file: {backup_file_path}")
@@ -411,6 +455,10 @@ def process_batch_results_to_db(batch_results, backup_file=None):
 
 def save_batch_ids(batch_ids, filename='batch_ids.json'):
     """Save batch IDs to a file for tracking"""
+    # Ensure filename uses logs directory
+    if not filename.startswith(LOGS_DIR):
+        filename = os.path.join(LOGS_DIR, filename)
+    
     data = {
         'batch_ids': batch_ids,
         'created_at': datetime.datetime.now().isoformat()
@@ -433,6 +481,10 @@ def save_batch_ids(batch_ids, filename='batch_ids.json'):
 
 def monitor_batches(filename='batch_ids.json', wait_minutes=30):
     """Monitor all tracked batches and process completed ones"""
+    # Ensure filename uses logs directory
+    if not filename.startswith(LOGS_DIR):
+        filename = os.path.join(LOGS_DIR, filename)
+        
     if not os.path.exists(filename):
         print(f"No batch tracking file found: {filename}")
         return False  # No batches to monitor
@@ -471,7 +523,7 @@ def monitor_batches(filename='batch_ids.json', wait_minutes=30):
                             'request_counts': status_info.get('request_counts', {})
                         }
                         
-                        log_file = f"completion_log_{datetime.datetime.now().strftime('%Y%m%d')}.json"
+                        log_file = os.path.join(LOGS_DIR, f"completion_log_{datetime.datetime.now().strftime('%Y%m%d')}.json")
                         if os.path.exists(log_file):
                             with open(log_file, 'r') as f:
                                 log_data = json.load(f)
@@ -498,7 +550,7 @@ def monitor_batches(filename='batch_ids.json', wait_minutes=30):
                         'metadata': status_info.get('metadata', {})
                     }
                     
-                    failure_file = f"batch_failures_{datetime.datetime.now().strftime('%Y%m%d')}.json"
+                    failure_file = os.path.join(LOGS_DIR, f"batch_failures_{datetime.datetime.now().strftime('%Y%m%d')}.json")
                     if os.path.exists(failure_file):
                         with open(failure_file, 'r') as f:
                             failure_data = json.load(f)
@@ -530,7 +582,7 @@ def monitor_batches(filename='batch_ids.json', wait_minutes=30):
                     'error_type': type(e).__name__
                 }
                 
-                error_file = f"monitor_errors_{datetime.datetime.now().strftime('%Y%m%d')}.json"
+                error_file = os.path.join(LOGS_DIR, f"monitor_errors_{datetime.datetime.now().strftime('%Y%m%d')}.json")
                 if os.path.exists(error_file):
                     with open(error_file, 'r') as f:
                         error_data = json.load(f)
@@ -574,7 +626,7 @@ def main():
     parser.add_argument('--action', choices=['list', 'status', 'download', 'monitor'], 
                        default='list', help='Action to perform')
     parser.add_argument('--batch-id', help='Specific batch ID to check/download')
-    parser.add_argument('--monitor-file', default='batch_ids.json', 
+    parser.add_argument('--monitor-file', default=os.path.join(LOGS_DIR, 'batch_ids.json'), 
                        help='File to track batch IDs')
     parser.add_argument('--wait', type=int, default=5, 
                        help='Minutes to wait between checks when monitoring')
