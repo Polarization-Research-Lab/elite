@@ -21,6 +21,7 @@ import pandas as pd
 import sqlalchemy as sql
 import dataset
 import ibis
+import datetime
 from ibis import _
 
 # Internal Dependencies
@@ -54,8 +55,8 @@ federal_tables = [
 state_tables = ['tweets_state']
 
 # Date range configuration
-today = datetime.date(year=2022, month=12, day=31)
-beginning_date = datetime.date(year=2018, month=1, day=1)
+today = datetime.date.today()
+beginning_date = datetime.date.today() - datetime.timedelta(weeks=1)
 
 def process_source_optimized(source, start_date, end_date):
     """
@@ -348,14 +349,6 @@ def main():
             print(f'✅ Successfully inserted {total_inserted} new records')
         else:
             print('\n💡 No new records to insert')
-        
-        print('\n🎉 OPTIMIZATION COMPLETE!')
-        print(f'   Processed {len(all_sources)} sources')
-        print(f'   Date range: {(today - beginning_date).days + 1} days')
-        estimated_original_queries = len(all_sources) * (today - beginning_date).days * 3
-        actual_queries = len(all_sources) * 2 + 1  # 2 queries per source + 1 insert
-        print(f'   Database operations: ~{actual_queries} (vs ~{estimated_original_queries} in original)')
-        print(f'   Estimated speedup: {estimated_original_queries // actual_queries}x fewer database operations')
         
     except Exception as e:
         print(f'❌ Error in main process: {e}')

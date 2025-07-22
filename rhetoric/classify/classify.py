@@ -69,7 +69,7 @@ def main():
             'extreme_target',
         ])
         .filter([
-            _.date >= '2017-06-23',
+            _.date >= '2018-01-01',
             _.date <= '2017-12-31',
             (_.classified != 1) | _.classified.isnull()
         ])
