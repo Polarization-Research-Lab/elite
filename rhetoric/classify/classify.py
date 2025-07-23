@@ -112,8 +112,8 @@ Examples:
         return
     
     # Validate date range
-    if begin_date < end_date:
-        print(f"❌ Begin date ({begin_date}) must be after end date ({end_date})")
+    if begin_date > end_date:
+        print(f"❌ Begin date ({begin_date}) must be before end date ({end_date})")
         return
     
     # Validate batch size
@@ -145,8 +145,8 @@ Examples:
             'extreme_target',
         ])
         .filter([
-            _.date >= end_date.strftime('%Y-%m-%d'),
-            _.date <= begin_date.strftime('%Y-%m-%d'),
+            _.date >= begin_date.strftime('%Y-%m-%d'),
+            _.date <= end_date.strftime('%Y-%m-%d'),
             (_.classified != 1) | _.classified.isnull()
         ])
     )
