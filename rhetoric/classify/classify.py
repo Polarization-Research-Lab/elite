@@ -99,7 +99,7 @@ def main():
         ])
         .filter([
             _.date >= '2021-12-20',
-            _.date <= '2021-12-34',
+            _.date <= '2021-12-24',
             (_.classified != 1) | _.classified.isnull()
         ])
     )
