@@ -89,7 +89,7 @@ def send_batch_with_system(data, prompt_name, system_prompt, model):
                         "content": entry['user_message']
                     }
                 ],
-                "max_completion_tokens": 1000
+                "max_completion_tokens": 5000
             }
         }, 
         axis = 1
