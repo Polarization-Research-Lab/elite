@@ -127,6 +127,9 @@ Return your response in this exact JSON format:
 # User prompt template - just the text to analyze
 def get_user_prompt(text):
     """Generate user prompt with the text to analyze"""
+    # Defensive check for empty/null text
+    if not text or str(text).strip() == '' or str(text).strip().lower() == 'nan':
+        raise ValueError(f"Empty or invalid text provided: {repr(text)}")
     return f"Analyze this text: {text}"
 
 def pipeline_optimized(row):

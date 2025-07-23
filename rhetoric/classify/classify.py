@@ -24,7 +24,6 @@ from batch_monitor import save_batch_ids
 
 dotenv.load_dotenv('../../../env')
 if 'PATH_TO_SECRETS' in os.environ:
-    print(os.environ['PATH_TO_SECRETS'])
     dotenv.load_dotenv(os.environ['PATH_TO_SECRETS'])
 else:
     print("Warning: PATH_TO_SECRETS environment variable not found")
@@ -97,8 +96,8 @@ Examples:
     parser.add_argument('--end-date', type=str,
                        default=(datetime.date.today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'),
                        help='End date for classification (YYYY-MM-DD format, default: 7 days ago)')
-    parser.add_argument('--batch-size', type=int, default=20000,
-                       help='Number of items per batch (default: 20000, max: 50000)')
+    parser.add_argument('--batch-size', type=int, default=15000,
+                       help='Number of items per batch (default: 15000, max: 50000)')
     
     args = parser.parse_args()
     
@@ -155,11 +154,9 @@ Examples:
     batch_size = args.batch_size  # Items per database batch (within 50,000 API limit)
     
     print(f'''
-RUNNING OPTIMIZED BATCH CLASSIFICATION
 📅 Date range: {end_date} to {begin_date} ({(begin_date - end_date).days + 1} days)
 📊 Unclassified items found: {count:,}
 🔢 Batch size: {batch_size:,}
-🚀 Using SYSTEM PROMPTS for better efficiency!
 ''')
 
     # Check if there are items to process
