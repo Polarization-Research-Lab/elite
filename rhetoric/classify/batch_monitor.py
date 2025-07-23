@@ -628,7 +628,7 @@ def main():
     parser.add_argument('--batch-id', help='Specific batch ID to check/download')
     parser.add_argument('--monitor-file', default=os.path.join(LOGS_DIR, 'batch_ids.json'), 
                        help='File to track batch IDs')
-    parser.add_argument('--wait', type=int, default=5, 
+    parser.add_argument('--wait', type=int, default=15, 
                        help='Minutes to wait between checks when monitoring')
     
     args = parser.parse_args()
