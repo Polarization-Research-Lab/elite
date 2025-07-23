@@ -98,8 +98,8 @@ def main():
             'extreme_target',
         ])
         .filter([
-            _.date >= '2021-12-20',
-            _.date <= '2021-12-24',
+            _.date >= '2021-01-01',
+            _.date <= '2021-12-31',
             (_.classified != 1) | _.classified.isnull()
         ])
     )
