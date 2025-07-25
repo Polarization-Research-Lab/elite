@@ -1,7 +1,7 @@
 '''
 Monitor and retrieve OpenAI batch processing results
 '''
-import os, json, time, datetime
+import os, json, time, datetime, signal, sys
 import pandas as pd
 import openai
 import dotenv
@@ -13,6 +13,41 @@ from ibis import _
 # Ensure logs directory exists
 LOGS_DIR = 'logs'
 os.makedirs(LOGS_DIR, exist_ok=True)
+
+# Global flag for graceful shutdown
+shutdown_requested = False
+
+def setup_signal_handlers():
+    """Setup signal handlers for graceful shutdown"""
+    def signal_handler(signum, frame):
+        global shutdown_requested
+        print(f"\n🛑 Received signal {signum}, initiating graceful shutdown...")
+        sys.stdout.flush()
+        shutdown_requested = True
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+def log_message(message, log_file=None, daemon_mode=False):
+    """Log message to both console and file with timestamp"""
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    formatted_message = f"[{timestamp}] {message}"
+    
+    # Print to console unless in daemon mode
+    if not daemon_mode:
+        print(formatted_message)
+        sys.stdout.flush()  # Ensure immediate output
+    
+    # Log to file if specified
+    if log_file:
+        try:
+            with open(log_file, 'a') as f:
+                f.write(formatted_message + '\n')
+                f.flush()
+        except Exception as e:
+            if not daemon_mode:  # Only print warning if not in daemon mode
+                print(f"Warning: Could not write to log file {log_file}: {e}")
+                sys.stdout.flush()
 
 dotenv.load_dotenv('../../../env')
 if 'PATH_TO_SECRETS' in os.environ:
@@ -622,14 +657,36 @@ def monitor_batches(filename='batch_ids.json', wait_minutes=30):
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='Monitor OpenAI batch processing')
-    parser.add_argument('--action', choices=['list', 'status', 'download', 'monitor'], 
+    parser = argparse.ArgumentParser(
+        description='Monitor OpenAI batch processing',
+        epilog='''
+Examples for server usage:
+  # Run in background with nohup (recommended for SSH)
+  nohup python batch_monitor.py --action monitor --daemon --wait 15 > /dev/null 2>&1 &
+  
+  # Run with screen (allows reconnecting)
+  screen -S batch_monitor python batch_monitor.py --action monitor
+  
+  # Check if monitor is running and view recent logs
+  python batch_monitor.py --action monitor-status
+  
+  # Stop running monitor (if you have the PID)
+  kill $(cat logs/batch_monitor.pid)
+  
+  # View live logs
+  tail -f logs/monitor_YYYYMMDD.log
+        ''',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('--action', choices=['list', 'status', 'download', 'monitor', 'monitor-status'], 
                        default='list', help='Action to perform')
     parser.add_argument('--batch-id', help='Specific batch ID to check/download')
     parser.add_argument('--monitor-file', default=os.path.join(LOGS_DIR, 'batch_ids.json'), 
                        help='File to track batch IDs')
     parser.add_argument('--wait', type=int, default=15, 
                        help='Minutes to wait between checks when monitoring')
+    parser.add_argument('--daemon', action='store_true',
+                       help='Run in daemon mode (suppress console output, log to file only)')
     
     args = parser.parse_args()
     
@@ -661,19 +718,141 @@ def main():
             processed = process_batch_results_to_db(results, backup_file)
             print(f"Processed {len(processed)} results")
     
+    elif args.action == 'monitor-status':
+        # Check if monitoring is currently running
+        pid_file = os.path.join(LOGS_DIR, 'batch_monitor.pid')
+        monitor_log = os.path.join(LOGS_DIR, f"monitor_{datetime.datetime.now().strftime('%Y%m%d')}.log")
+        
+        print("📊 BATCH MONITOR STATUS")
+        print("=" * 50)
+        
+        # Check PID file
+        if os.path.exists(pid_file):
+            try:
+                with open(pid_file, 'r') as f:
+                    pid = int(f.read().strip())
+                
+                # Check if process is still running
+                try:
+                    os.kill(pid, 0)  # Doesn't actually kill, just checks if process exists
+                    print(f"✅ Monitor is RUNNING (PID: {pid})")
+                except OSError:
+                    print(f"❌ Monitor PID file exists but process {pid} is not running")
+                    print(f"   (Stale PID file: {pid_file})")
+            except Exception as e:
+                print(f"❌ Error reading PID file: {e}")
+        else:
+            print("❌ Monitor is NOT RUNNING (no PID file found)")
+        
+        # Show recent log entries
+        if os.path.exists(monitor_log):
+            print(f"\n📋 Recent log entries from {monitor_log}:")
+            print("-" * 50)
+            try:
+                with open(monitor_log, 'r') as f:
+                    lines = f.readlines()
+                    # Show last 10 lines
+                    for line in lines[-10:]:
+                        print(f"   {line.rstrip()}")
+            except Exception as e:
+                print(f"❌ Error reading log file: {e}")
+        else:
+            print(f"\n📋 No log file found for today: {monitor_log}")
+        
+        # Show batch tracking file status
+        batch_file = os.path.join(LOGS_DIR, 'batch_ids.json')
+        if os.path.exists(batch_file):
+            try:
+                with open(batch_file, 'r') as f:
+                    data = json.load(f)
+                batch_groups = len(data.get('batches', []))
+                print(f"\n📁 Batch tracking: {batch_groups} batch groups being monitored")
+            except Exception as e:
+                print(f"\n❌ Error reading batch tracking file: {e}")
+        else:
+            print(f"\n📁 No batch tracking file found")
+    
     elif args.action == 'monitor':
-        print(f"Starting batch monitoring (checking every {args.wait} minutes)...")
-        print("Press Ctrl+C to stop")
+        # Setup signal handlers and logging
+        setup_signal_handlers()
+        monitor_log = os.path.join(LOGS_DIR, f"monitor_{datetime.datetime.now().strftime('%Y%m%d')}.log")
+        
+        log_message(f"Starting batch monitoring (checking every {args.wait} minutes)...", monitor_log, args.daemon)
+        log_message("To stop monitoring: Ctrl+C or send SIGTERM signal", monitor_log, args.daemon)
+        log_message(f"Monitor log file: {monitor_log}", monitor_log, args.daemon)
+        
+        if args.daemon:
+            log_message("Running in daemon mode - output only to log file", monitor_log, False)  # Always show this message
+        
+        # Create PID file for process management
+        pid_file = os.path.join(LOGS_DIR, 'batch_monitor.pid')
         try:
-            while True:
-                still_monitoring = monitor_batches(args.monitor_file, args.wait)
-                if not still_monitoring:
-                    print("\n🎉 All batches completed! Monitoring finished.")
-                    break
-                print(f"\n⏳ Waiting {args.wait} minutes before next check...")
-                time.sleep(args.wait * 60)
+            with open(pid_file, 'w') as f:
+                f.write(str(os.getpid()))
+            log_message(f"Process ID: {os.getpid()} (saved to {pid_file})", monitor_log, args.daemon)
+        except Exception as e:
+            log_message(f"Warning: Could not create PID file: {e}", monitor_log, args.daemon)
+        
+        cycle_count = 0
+        try:
+            while not shutdown_requested:
+                cycle_count += 1
+                try:
+                    log_message(f"🔄 Starting monitoring cycle #{cycle_count}", monitor_log, args.daemon)
+                    
+                    still_monitoring = monitor_batches(args.monitor_file, args.wait)
+                    if not still_monitoring:
+                        log_message("🎉 All batches completed! Monitoring finished.", monitor_log, args.daemon)
+                        break
+                    
+                    if shutdown_requested:
+                        break
+                    
+                    log_message(f"⏳ Waiting {args.wait} minutes before next check...", monitor_log, args.daemon)
+                    
+                    # Sleep in smaller chunks to allow for responsive shutdown
+                    total_sleep_seconds = args.wait * 60
+                    sleep_chunk = 30  # Sleep in 30-second chunks
+                    
+                    for i in range(0, total_sleep_seconds, sleep_chunk):
+                        if shutdown_requested:
+                            log_message("🛑 Shutdown requested during wait period", monitor_log, args.daemon)
+                            break
+                        
+                        remaining_sleep = min(sleep_chunk, total_sleep_seconds - i)
+                        time.sleep(remaining_sleep)
+                        
+                        # Heartbeat every 5 minutes during wait
+                        if i > 0 and i % 300 == 0:
+                            remaining_minutes = (total_sleep_seconds - i) // 60
+                            log_message(f"💓 Heartbeat: {remaining_minutes} minutes until next check", monitor_log, args.daemon)
+                
+                except Exception as cycle_error:
+                    error_msg = f"❌ Error in monitoring cycle #{cycle_count}: {cycle_error}"
+                    log_message(error_msg, monitor_log, args.daemon)
+                    log_message(f"🔄 Continuing monitoring after 1-minute delay...", monitor_log, args.daemon)
+                    
+                    # Brief delay before retrying
+                    for _ in range(60):
+                        if shutdown_requested:
+                            break
+                        time.sleep(1)
+                
         except KeyboardInterrupt:
-            print("\nMonitoring stopped.")
+            log_message("🛑 Monitoring stopped by KeyboardInterrupt", monitor_log, args.daemon)
+        except Exception as e:
+            log_message(f"❌ Fatal error in monitoring: {e}", monitor_log, args.daemon)
+            raise
+        finally:
+            log_message("👋 Monitoring session ended", monitor_log, args.daemon)
+            
+            # Clean up PID file
+            try:
+                if os.path.exists(pid_file):
+                    os.remove(pid_file)
+                    log_message(f"Cleaned up PID file: {pid_file}", monitor_log, args.daemon)
+            except Exception as e:
+                log_message(f"Warning: Could not remove PID file: {e}", monitor_log, args.daemon)
 
 if __name__ == "__main__":
     main() 
