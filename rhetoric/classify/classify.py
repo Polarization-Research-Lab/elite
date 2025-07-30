@@ -190,7 +190,7 @@ Examples:
             batch_data, 
             "classification", 
             prompt.system_prompt,
-            "o4-mini"
+            "gpt-4o"
         )
         
         print(f'Batch submitted with IDs: {batch_ids}')
