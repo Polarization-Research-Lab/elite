@@ -91,10 +91,10 @@ Examples:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument('--begin-date', type=str, 
-                       default=datetime.date.today().strftime('%Y-%m-%d'),
+                       default=(datetime.date.today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'),
                        help='Begin date for classification (YYYY-MM-DD format, default: today)')
     parser.add_argument('--end-date', type=str,
-                       default=(datetime.date.today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'),
+                       default=datetime.date.today().strftime('%Y-%m-%d'),
                        help='End date for classification (YYYY-MM-DD format, default: 7 days ago)')
     parser.add_argument('--batch-size', type=int, default=15000,
                        help='Number of items per batch (default: 15000, max: 50000)')
